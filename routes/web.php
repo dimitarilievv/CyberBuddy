@@ -20,7 +20,7 @@ Route::view('profile', 'profile')
 //        return 'ПРОБЛЕМ: API клучот е празен! Провери го .env фајлот.';
 //    }
 //
-//    // 2. Испрати барање �� покажи го целиот одговор
+//    // 2. Испрати барање покажи го целиот одговор
 //    $response = \Illuminate\Support\Facades\Http::post(
 //        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$key}",
 //        [
