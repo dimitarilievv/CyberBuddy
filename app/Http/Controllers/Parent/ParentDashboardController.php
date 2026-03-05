@@ -27,3 +27,4 @@ class ParentDashboardController extends Controller
         return view('parent.dashboard', compact('childrenProgress'));
     }
 }
+

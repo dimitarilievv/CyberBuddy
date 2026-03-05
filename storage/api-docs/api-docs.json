@@ -1,0 +1,169 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CyberBuddy API",
+        "description": "API documentation for the CyberBuddy application.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "Local API Server"
+        }
+    ],
+    "paths": {
+        "/test-swagger": {
+            "get": {
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Test Swagger endpoint",
+                "operationId": "d6ded1d66f8aba7b7614b0e6e0046ab3",
+                "responses": {
+                    "200": {
+                        "description": "Swagger is working"
+                    }
+                }
+            }
+        },
+        "/modules/{module}/lessons/{lesson}": {
+            "get": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Show a lesson inside a module (HTML page)",
+                "operationId": "f8076d5c5dda8ccf060190f5c6425f71",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "description": "Lesson ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lesson page"
+                    },
+                    "404": {
+                        "description": "Lesson or module not found"
+                    }
+                }
+            }
+        },
+        "/modules/{module}/lessons/{lesson}/complete": {
+            "post": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Mark a lesson as completed for the authenticated user",
+                "operationId": "01f4eca5685b2c97772f134ac9a3b0cd",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "description": "Lesson ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirects back to the lesson page after completion"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Module or enrollment not found"
+                    }
+                }
+            }
+        },
+        "/scenarios/{scenario}": {
+            "get": {
+                "tags": [
+                    "Scenarios"
+                ],
+                "summary": "Show a scenario",
+                "operationId": "9eb36ae28739bef52a7b2e4575a16ccd",
+                "parameters": [
+                    {
+                        "name": "scenario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/scenarios/{scenario}/submit": {
+            "post": {
+                "tags": [
+                    "Scenarios"
+                ],
+                "summary": "Submit a scenario choice",
+                "operationId": "c9b65584f187052887c064e096c80fd2",
+                "parameters": [
+                    {
+                        "name": "scenario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Test",
+            "description": "Test"
+        },
+        {
+            "name": "Lessons",
+            "description": "Lessons"
+        },
+        {
+            "name": "Scenarios",
+            "description": "Scenarios"
+        }
+    ]
+}

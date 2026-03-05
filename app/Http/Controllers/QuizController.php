@@ -6,6 +6,7 @@ use App\Services\QuizService;
 use App\Services\BadgeService;
 use Illuminate\Http\Request;
 
+
 class QuizController extends Controller
 {
     private QuizService $quizService;
