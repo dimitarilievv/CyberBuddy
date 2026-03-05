@@ -24,9 +24,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/modules/{slug}', [ModuleController::class, 'show'])->name('modules.show');
     Route::post('/modules/{slug}/enroll', [ModuleController::class, 'enroll'])->name('modules.enroll');
 
-    // Лекции
-    Route::get('/modules/{module:slug}/lessons/{lesson:slug}', [LessonController::class, 'show'])->name('lessons.show');
-    Route::post('/modules/{module:slug}/lessons/{lesson:slug}/complete', [LessonController::class, 'complete'])->name('lessons.complete');
 
     // Квизови
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
@@ -35,7 +32,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Сценарија
     Route::get('/scenarios/{scenario}', [ScenarioController::class, 'show'])->name('scenarios.show');
     Route::post('/scenarios/{scenario}/submit', [ScenarioController::class, 'submit'])->name('scenarios.submit');
+// routes/web.php or routes/api.php
 
+    Route::get('/modules/{module}/lessons/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
+    Route::post('/modules/{module}/lessons/{lesson}/complete', [LessonController::class, 'complete'])->name('lessons.complete');
     // Профил
     Route::view('profile', 'profile')->name('profile');
 });
