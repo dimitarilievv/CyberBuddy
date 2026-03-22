@@ -1,70 +1,56 @@
 <?php
-
 namespace Database\Seeders;
-
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-
 class RoleAndPermissionSeeder extends Seeder
 {
     public function run(): void
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
         // === PERMISSIONS ===
-
-        // Модули
+        // Modules
         Permission::create(['name' => 'view modules']);
         Permission::create(['name' => 'create modules']);
         Permission::create(['name' => 'edit modules']);
         Permission::create(['name' => 'delete modules']);
         Permission::create(['name' => 'publish modules']);
-
-        // Лекции
+        // Lessons
         Permission::create(['name' => 'view lessons']);
         Permission::create(['name' => 'create lessons']);
         Permission::create(['name' => 'edit lessons']);
         Permission::create(['name' => 'delete lessons']);
-
-        // Квизови
+        // Quizzes
         Permission::create(['name' => 'take quizzes']);
         Permission::create(['name' => 'create quizzes']);
         Permission::create(['name' => 'edit quizzes']);
         Permission::create(['name' => 'delete quizzes']);
         Permission::create(['name' => 'view quiz results']);
-
-        // Сценарија
+        // Scenarios
         Permission::create(['name' => 'play scenarios']);
         Permission::create(['name' => 'create scenarios']);
         Permission::create(['name' => 'edit scenarios']);
         Permission::create(['name' => 'delete scenarios']);
-
         // AI
         Permission::create(['name' => 'use ai chat']);
         Permission::create(['name' => 'generate ai content']);
         Permission::create(['name' => 'approve ai content']);
-
-        // Корисници
+        // Users
         Permission::create(['name' => 'manage users']);
         Permission::create(['name' => 'view children progress']);
         Permission::create(['name' => 'view student progress']);
-
-        // Извештаи
+        // Reports
         Permission::create(['name' => 'view reports']);
         Permission::create(['name' => 'generate certificates']);
         Permission::create(['name' => 'download certificates']);
-
-        // Администрација
+        // Administration
         Permission::create(['name' => 'manage categories']);
         Permission::create(['name' => 'manage tags']);
         Permission::create(['name' => 'manage badges']);
         Permission::create(['name' => 'view activity logs']);
         Permission::create(['name' => 'manage reported content']);
-
         // === ROLES ===
-
-        // Дете (ученик)
+        // Child (student)
         $child = Role::create(['name' => 'child']);
         $child->givePermissionTo([
             'view modules',
@@ -74,8 +60,7 @@ class RoleAndPermissionSeeder extends Seeder
             'use ai chat',
             'download certificates',
         ]);
-
-        // Родител
+        // Parent
         $parent = Role::create(['name' => 'parent']);
         $parent->givePermissionTo([
             'view modules',
@@ -84,8 +69,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view reports',
             'download certificates',
         ]);
-
-        // Наставник
+        // Teacher
         $teacher = Role::create(['name' => 'teacher']);
         $teacher->givePermissionTo([
             'view modules',
@@ -106,8 +90,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view reports',
             'generate certificates',
         ]);
-
-        // Админ (сè)
+        // Admin (all)
         $admin = Role::create(['name' => 'admin']);
         $admin->givePermissionTo(Permission::all());
     }

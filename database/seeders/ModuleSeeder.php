@@ -1,24 +1,20 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\Module;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-
 class ModuleSeeder extends Seeder
 {
     public function run(): void
     {
         $teacher = User::where('email', 'teacher@cyberbuddy.mk')->first();
-
         $modules = [
             [
-                'title' => 'Силни Лозинки - Твојата Прва Одбрана',
+                'title' => 'Strong Passwords - Your First Defense',
                 'slug' => 'strong-passwords',
-                'description' => 'Научи зошто лозинките се важни и како да креираш силна лозинка што никој не може да ја погоди. Ќе научиш трикови за паметење на сложени лозинки.',
+                'description' => 'Learn why passwords matter and how to create strong passwords that are hard to guess. You will learn memory tricks for complex passwords.',
                 'audience' => 'child',
                 'difficulty' => 'beginner',
                 'age_group' => '10-13',
@@ -29,9 +25,9 @@ class ModuleSeeder extends Seeder
                 'tags' => ['beginner', 'interactive', 'recommended'],
             ],
             [
-                'title' => 'Препознај го Фишингот',
+                'title' => 'Recognize Phishing',
                 'slug' => 'recognize-phishing',
-                'description' => 'Научи како да препознаеш лажни емаили, пораки и веб страници кои се обидуваат да ги украдат твоите податоци.',
+                'description' => 'Learn how to spot fake emails, messages, and websites that try to steal your data.',
                 'audience' => 'child',
                 'difficulty' => 'intermediate',
                 'age_group' => '10-13',
@@ -42,9 +38,9 @@ class ModuleSeeder extends Seeder
                 'tags' => ['intermediate', 'scenario', 'popular'],
             ],
             [
-                'title' => 'Безбедност на Социјални Мрежи',
+                'title' => 'Social Media Safety',
                 'slug' => 'social-media-safety',
-                'description' => 'Научи како безбедно да ги користиш Instagram, TikTok и другите социјални мрежи без да ја загрозиш твојата приватност.',
+                'description' => 'Learn how to use Instagram, TikTok, and other social networks safely without risking your privacy.',
                 'audience' => 'child',
                 'difficulty' => 'beginner',
                 'age_group' => '10-13',
@@ -55,9 +51,9 @@ class ModuleSeeder extends Seeder
                 'tags' => ['beginner', 'popular', 'new'],
             ],
             [
-                'title' => 'Стоп за Сајбер Булинг',
+                'title' => 'Stop Cyberbullying',
                 'slug' => 'stop-cyberbullying',
-                'description' => 'Научи како да го препознаеш сајбер булингот, што да направиш ако ти или некој друг е жртва, и како да бидеш добар дигитален граѓанин.',
+                'description' => 'Learn how to recognize cyberbullying, what to do if you or someone else is targeted, and how to be a good digital citizen.',
                 'audience' => 'child',
                 'difficulty' => 'beginner',
                 'age_group' => '10-13',
@@ -68,9 +64,9 @@ class ModuleSeeder extends Seeder
                 'tags' => ['beginner', 'mandatory', 'scenario'],
             ],
             [
-                'title' => 'Безбедно Гејминг',
+                'title' => 'Safe Gaming',
                 'slug' => 'safe-gaming',
-                'description' => 'Научи како безбедно да играш онлајн игри, да ги заштитиш своите акаунти и да препознаеш опасности во гејминг светот.',
+                'description' => 'Learn how to play online games safely, protect your accounts, and spot risks in gaming communities.',
                 'audience' => 'child',
                 'difficulty' => 'beginner',
                 'age_group' => '10-13',
@@ -81,9 +77,9 @@ class ModuleSeeder extends Seeder
                 'tags' => ['beginner', 'interactive', 'new'],
             ],
             [
-                'title' => 'Водич за Родители: Онлајн Безбедност',
+                'title' => 'Parent Guide: Online Safety',
                 'slug' => 'parent-guide-online-safety',
-                'description' => 'Научете како да ги заштитите вашите деца онлајн, поставување на родителски контроли и комуникација за дигитална безбедност.',
+                'description' => 'Learn how to protect your children online, set parental controls, and build healthy conversations about digital safety.',
                 'audience' => 'parent',
                 'difficulty' => 'beginner',
                 'age_group' => '18+',
@@ -94,19 +90,14 @@ class ModuleSeeder extends Seeder
                 'tags' => ['recommended'],
             ],
         ];
-
         foreach ($modules as $moduleData) {
             $category = Category::where('slug', $moduleData['category_slug'])->first();
             $tagSlugs = $moduleData['tags'];
-
             unset($moduleData['category_slug'], $moduleData['tags']);
-
             $moduleData['category_id'] = $category->id;
             $moduleData['author_id'] = $teacher->id;
             $moduleData['published_at'] = now();
-
             $module = Module::create($moduleData);
-
             $tags = Tag::whereIn('slug', $tagSlugs)->get();
             $module->tags()->attach($tags);
         }

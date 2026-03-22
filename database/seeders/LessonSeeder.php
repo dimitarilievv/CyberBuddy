@@ -1,33 +1,29 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\Lesson;
 use App\Models\Module;
 use Illuminate\Database\Seeder;
-
 class LessonSeeder extends Seeder
 {
     public function run(): void
     {
         $passwordModule = Module::where('slug', 'strong-passwords')->first();
-
         $lessons = [
             [
                 'module_id' => $passwordModule->id,
-                'title' => 'Зошто се важни лозинките?',
+                'title' => 'Why Passwords Matter',
                 'slug' => 'why-passwords-matter',
-                'content' => '<h2>🔑 Лозинките се клучот до твојот дигитален свет</h2>
-                <p>Замисли дека лозинката е како клучот од твојата куќа. Дали би го оставил клучот под отирачот каде секој може да го најде?</p>
-                <h3>Што може да се случи со слаба лозинка?</h3>
+                'content' => '<h2>Passwords are the key to your digital world</h2>
+                <p>Think of a password like the key to your house. Would you leave your key under the doormat where anyone can find it?</p>
+                <h3>What can happen with a weak password?</h3>
                 <ul>
-                    <li>🎮 Некој може да ти го украде гејминг акаунтот</li>
-                    <li>📱 Некој може да ги чита твоите пораки</li>
-                    <li>👤 Некој може да се претставува како тебе</li>
-                    <li>💰 Некој може да купи работи со твојот акаунт</li>
+                    <li>Someone can steal your gaming account</li>
+                    <li>Someone can read your messages</li>
+                    <li>Someone can pretend to be you</li>
+                    <li>Someone can buy things using your account</li>
                 </ul>
-                <h3>Дали знаеше?</h3>
-                <p>Лозинката "123456" може да се погоди за помалку од 1 секунда! А лозинката "М0јКуч3Е$ин!" би требало милиони години.</p>',
+                <h3>Did you know?</h3>
+                <p>The password "123456" can be guessed in under a second! A password like "M0yDog3$IsGreat!" could take millions of years.</p>',
                 'type' => 'text',
                 'estimated_minutes' => 5,
                 'sort_order' => 1,
@@ -35,26 +31,26 @@ class LessonSeeder extends Seeder
             ],
             [
                 'module_id' => $passwordModule->id,
-                'title' => 'Како да креираш силна лозинка',
+                'title' => 'How to Create a Strong Password',
                 'slug' => 'create-strong-password',
-                'content' => '<h2>💪 Правила за Силна Лозинка</h2>
-                <h3>Секоја силна лозинка треба да има:</h3>
+                'content' => '<h2>Rules for a Strong Password</h2>
+                <h3>Every strong password should have:</h3>
                 <ol>
-                    <li>✅ Најмалку 12 карактери</li>
-                    <li>✅ Големи букви (А, Б, В...)</li>
-                    <li>✅ Мали букви (а, б, в...)</li>
-                    <li>✅ Бројки (1, 2, 3...)</li>
-                    <li>✅ Специјални знаци (!@#$%)</li>
+                    <li>At least 12 characters</li>
+                    <li>Uppercase letters (A, B, C...)</li>
+                    <li>Lowercase letters (a, b, c...)</li>
+                    <li>Numbers (1, 2, 3...)</li>
+                    <li>Special symbols (!@#$%)</li>
                 </ol>
-                <h3>🎯 Трик за паметење: Метод на Реченица</h3>
-                <p>Земи реченица што ја знаеш и земи ги првите букви:</p>
-                <p><strong>"Мојот куче Рекс има 3 години и сака коски!"</strong></p>
-                <p>Станува: <code>МкРи3гиск!</code></p>
-                <h3>❌ Никогаш не користи:</h3>
+                <h3>Memory trick: The sentence method</h3>
+                <p>Pick a sentence you know and take the first letters:</p>
+                <p><strong>"My dog Rex is 3 years old and loves bones!"</strong></p>
+                <p>Becomes: <code>Mdr3yoalb!</code></p>
+                <h3>Never use:</h3>
                 <ul>
-                    <li>Твоето име или роденден</li>
-                    <li>123456 или password</li>
-                    <li>Иста лозинка за сè</li>
+                    <li>Your name or birthday</li>
+                    <li>123456 or password</li>
+                    <li>The same password for everything</li>
                 </ul>',
                 'type' => 'interactive',
                 'estimated_minutes' => 7,
@@ -63,33 +59,31 @@ class LessonSeeder extends Seeder
             ],
             [
                 'module_id' => $passwordModule->id,
-                'title' => 'Тестирај го твоето знаење!',
+                'title' => 'Test Your Knowledge!',
                 'slug' => 'password-quiz-lesson',
-                'content' => '<h2>📝 Време е за квиз!</h2>
-                <p>Да видиме колку научи за лозинките. Одговори на прашањата и добиј беџ!</p>',
+                'content' => '<h2>Time for a quiz!</h2>
+                <p>Let\'s see how much you learned about passwords. Answer the questions and earn a badge!</p>',
                 'type' => 'text',
                 'estimated_minutes' => 5,
                 'sort_order' => 3,
                 'is_published' => true,
             ],
         ];
-
-        // Лекции за модулот "Препознај го Фишингот"
+        // Lessons for the "Recognize Phishing" module
         $phishingModule = Module::where('slug', 'recognize-phishing')->first();
-
         $phishingLessons = [
             [
                 'module_id' => $phishingModule->id,
-                'title' => 'Што е Фишинг?',
+                'title' => 'What Is Phishing?',
                 'slug' => 'what-is-phishing',
-                'content' => '<h2>🎣 Фишинг = Дигитален Риболов</h2>
-                <p>Фишинг е кога некој се обидува да те измами да ги дадеш твоите лични информации (лозинка, број на картичка) преку лажни пораки или веб страници.</p>
-                <h3>Како функционира?</h3>
+                'content' => '<h2>Phishing = digital fishing</h2>
+                <p>Phishing is when someone tries to trick you into giving away personal information (passwords, card numbers) through fake messages or websites.</p>
+                <h3>How it works</h3>
                 <ol>
-                    <li>📧 Добиваш емаил или порака што изгледа легитимно</li>
-                    <li>😰 Пораката те плаши или те мами ("Твојот акаунт е хакиран!" или "Освои iPhone!")</li>
-                    <li>🔗 Те праќа на лажна веб страница</li>
-                    <li>😱 Ти ги внесуваш податоците и тие ги крадат</li>
+                    <li>You get an email or message that looks real</li>
+                    <li>The message scares or tempts you ("Your account was hacked!" or "You won a phone!")</li>
+                    <li>It sends you to a fake website</li>
+                    <li>You type your info and they steal it</li>
                 </ol>',
                 'type' => 'text',
                 'estimated_minutes' => 5,
@@ -98,17 +92,16 @@ class LessonSeeder extends Seeder
             ],
             [
                 'module_id' => $phishingModule->id,
-                'title' => 'Сценарио: Сомнителен Емаил',
+                'title' => 'Scenario: Suspicious Email',
                 'slug' => 'phishing-scenario',
-                'content' => '<h2>🎭 Сценарио: Добиваш чуден емаил</h2>
-                <p>Играј го ова сценарио и одлучи што ќе направиш!</p>',
+                'content' => '<h2>Scenario: You receive a strange email</h2>
+                <p>Play this scenario and decide what to do!</p>',
                 'type' => 'scenario',
                 'estimated_minutes' => 10,
                 'sort_order' => 2,
                 'is_published' => true,
             ],
         ];
-
         foreach (array_merge($lessons, $phishingLessons) as $lesson) {
             Lesson::create($lesson);
         }

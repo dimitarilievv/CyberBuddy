@@ -13,12 +13,13 @@ class CertificateController extends Controller
 
     public function __construct(
         CertificateService $certificateService,
-    ) {
+    )
+    {
         $this->certificateService = $certificateService;
     }
 
     /**
-     * Листа на сертификати на логираниот корисник
+     * List of sertificates for the authenticated user
      */
     public function index()
     {
@@ -31,7 +32,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Генерирај сертификат за завршен модул
+     * Generate a certificate for a completed enrollment
      */
     public function generate(int $enrollmentId)
     {
@@ -41,28 +42,23 @@ class CertificateController extends Controller
             ->with(['user', 'module'])
             ->firstOrFail();
 
-        // Провери дали веќе постои
         $existing = Certificate::where('user_id', auth()->id())
             ->where('module_id', $enrollment->module_id)
             ->first();
 
         if ($existing) {
             return redirect()->route('certificates.show', $existing)
-                ->with('info', 'Сертификатот веќе е генериран!');
+                ->with('info', 'Certificate is already generated!');
         }
 
         $certificate = $this->certificateService->generate($enrollment);
 
         return redirect()->route('certificates.show', $certificate)
-            ->with('success', 'Сертификатот е генериран успешно! 🎉');
+            ->with('success', 'Certificate is generated successfully! 🎉');
     }
 
-    /**
-     * Прикажи сертификат
-     */
     public function show(Certificate $certificate)
     {
-        // Само сопственикот или админот може да го види
         if ($certificate->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
             abort(403);
         }
@@ -73,7 +69,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Преземи PDF на сертификатот
+     * Download the certificate PDF
      */
     public function download(Certificate $certificate)
     {
@@ -82,7 +78,6 @@ class CertificateController extends Controller
         }
 
         if (!$certificate->pdf_path || !\Storage::disk('public')->exists($certificate->pdf_path)) {
-            // Регенерирај ако PDF не постои
             $enrollment = Enrollment::where('user_id', $certificate->user_id)
                 ->where('module_id', $certificate->module_id)
                 ->first();

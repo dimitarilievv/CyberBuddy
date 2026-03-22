@@ -12,7 +12,8 @@ class ModuleController extends Controller
 
     public function __construct(
         ModuleService $moduleService,
-    ) {
+    )
+    {
         $this->moduleService = $moduleService;
     }
 
@@ -41,6 +42,6 @@ class ModuleController extends Controller
         $this->moduleService->enrollUser(auth()->id(), $module->id);
 
         return redirect()->route('modules.show', $slug)
-            ->with('success', 'Успешно се запиша во модулот!');
+            ->with('success', 'Successfully enrolled!');
     }
 }

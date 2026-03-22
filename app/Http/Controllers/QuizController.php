@@ -13,9 +13,10 @@ class QuizController extends Controller
     private BadgeService $badgeService;
 
     public function __construct(
-        QuizService $quizService,
+        QuizService  $quizService,
         BadgeService $badgeService,
-    ) {
+    )
+    {
         $this->badgeService = $badgeService;
         $this->quizService = $quizService;
     }
@@ -31,13 +32,12 @@ class QuizController extends Controller
     public function submit(Request $request, int $quizId)
     {
         if (!$this->quizService->canAttempt($quizId, auth()->id())) {
-            return back()->with('error', 'Го искористи максималниот број обиди!');
+            return back()->with('error', 'You have reached max number attempts!');
         }
 
         $answers = $request->input('answers', []);
         $attempt = $this->quizService->submitQuiz($quizId, auth()->id(), $answers);
 
-        // Провери за нови беџови
         $newBadges = $this->badgeService->checkAndAward(auth()->user());
 
         return view('quizzes.result', compact('attempt', 'newBadges'));
