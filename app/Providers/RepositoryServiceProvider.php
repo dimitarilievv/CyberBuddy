@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\ScenarioRepositoryInterface;
 use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\QuestionAnswerRepositoryInterface;
+use App\Repositories\Interfaces\CertificateRepositoryInterface;
 
 use App\Repositories\ModuleRepository;
 use App\Repositories\QuizRepository;
@@ -17,6 +18,7 @@ use App\Repositories\ScenarioRepository;
 use App\Repositories\EnrollmentRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\QuestionAnswerRepository;
+use App\Repositories\CertificateRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -28,5 +30,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EnrollmentRepositoryInterface::class, EnrollmentRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(QuestionAnswerRepositoryInterface::class, QuestionAnswerRepository::class);
+        $this->app->bind(CertificateRepositoryInterface::class, CertificateRepository::class);
     }
 }
