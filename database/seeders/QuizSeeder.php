@@ -1,22 +1,18 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\Lesson;
 use App\Models\Quiz;
 use App\Models\Question;
 use Illuminate\Database\Seeder;
-
 class QuizSeeder extends Seeder
 {
     public function run(): void
     {
         $quizLesson = Lesson::where('slug', 'password-quiz-lesson')->first();
-
         $quiz = Quiz::create([
             'lesson_id' => $quizLesson->id,
-            'title' => 'Квиз: Силни Лозинки',
-            'description' => 'Тестирај го твоето знаење за лозинки!',
+            'title' => 'Quiz: Strong Passwords',
+            'description' => 'Test your knowledge about passwords!',
             'passing_score' => 70,
             'time_limit_minutes' => 10,
             'max_attempts' => 3,
@@ -24,39 +20,38 @@ class QuizSeeder extends Seeder
             'show_correct_answers' => true,
             'is_published' => true,
         ]);
-
         $questions = [
             [
                 'quiz_id' => $quiz->id,
-                'question_text' => 'Која од овие лозинки е НАЈСИЛНА?',
+                'question_text' => 'Which of these passwords is the strongest?',
                 'type' => 'multiple_choice',
                 'options' => [
                     'A' => '123456',
                     'B' => 'password',
-                    'C' => 'М0јКуч3$ака!Коски',
+                    'C' => 'M0yD0g$LikesBones!',
                     'D' => 'ana2013',
                 ],
                 'correct_answer' => ['C'],
-                'explanation' => 'Лозинката "М0јКуч3$ака!Коски" е најсилна бидејќи содржи големи и мали букви, бројки, специјални знаци и е долга.',
+                'explanation' => 'Password C is strongest because it has upper/lowercase letters, numbers, special symbols, and length.',
                 'points' => 2,
                 'sort_order' => 1,
             ],
             [
                 'quiz_id' => $quiz->id,
-                'question_text' => 'Дали е безбедно да ја користиш истата лозинка за сите твои акаунти?',
+                'question_text' => 'Is it safe to use the same password for all your accounts?',
                 'type' => 'true_false',
                 'options' => [
-                    'A' => 'Точно',
-                    'B' => 'Неточно',
+                    'A' => 'True',
+                    'B' => 'False',
                 ],
                 'correct_answer' => ['B'],
-                'explanation' => 'НЕТОЧНО! Ако хакер ја дознае едната лозинка, ќе има пристап до СИТЕ твои акаунти.',
+                'explanation' => 'False. If one password is leaked, all accounts are at risk.',
                 'points' => 1,
                 'sort_order' => 2,
             ],
             [
                 'quiz_id' => $quiz->id,
-                'question_text' => 'Колку карактери МИНИМУМ треба да има една силна лозинка?',
+                'question_text' => 'What is the minimum length for a strong password?',
                 'type' => 'multiple_choice',
                 'options' => [
                     'A' => '4',
@@ -65,42 +60,41 @@ class QuizSeeder extends Seeder
                     'D' => '12',
                 ],
                 'correct_answer' => ['D'],
-                'explanation' => 'Силна лозинка треба да има минимум 12 карактери. Подолга лозинка = побезбедна.',
+                'explanation' => 'A strong password should be at least 12 characters.',
                 'points' => 1,
                 'sort_order' => 3,
             ],
             [
                 'quiz_id' => $quiz->id,
-                'question_text' => 'Кое од овие НЕ треба да го користиш како лозинка?',
+                'question_text' => 'Which of these should you avoid using as a password?',
                 'type' => 'multiple_choice',
                 'options' => [
-                    'A' => 'Твојот роденден',
-                    'B' => 'Име на миленичето',
-                    'C' => 'Случајна реченица со бројки',
-                    'D' => 'Твоето име + 123',
+                    'A' => 'Your birthday',
+                    'B' => 'Your pet name',
+                    'C' => 'A random sentence with numbers',
+                    'D' => 'Your name + 123',
                 ],
                 'correct_answer' => ['C'],
-                'explanation' => 'А, B и D се лесни за погодување. Случајна реченица со бројки е добар избор!',
+                'explanation' => 'A, B, and D are easy to guess. A random sentence with numbers is a better choice.',
                 'points' => 2,
                 'sort_order' => 4,
             ],
             [
                 'quiz_id' => $quiz->id,
-                'question_text' => 'На кого е БЕЗБЕДНО да му ја кажеш твојата лозинка?',
+                'question_text' => 'Who is it safe to share your password with?',
                 'type' => 'multiple_choice',
                 'options' => [
-                    'A' => 'Најдобар другар',
-                    'B' => 'Наставник',
-                    'C' => 'Родител/Старател',
-                    'D' => 'Никој',
+                    'A' => 'Your best friend',
+                    'B' => 'Your teacher',
+                    'C' => 'Your parent/guardian',
+                    'D' => 'No one',
                 ],
                 'correct_answer' => ['C'],
-                'explanation' => 'Лозинката може да ја знае само твој родител или старател. Не ја споделувај со другари, наставници или кој било друг.',
+                'explanation' => 'Only a parent or guardian should know your password. Do not share it with anyone else.',
                 'points' => 2,
                 'sort_order' => 5,
             ],
         ];
-
         foreach ($questions as $question) {
             Question::create($question);
         }

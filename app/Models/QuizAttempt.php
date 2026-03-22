@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuizAttempt extends Model
 {
@@ -13,36 +15,48 @@ class QuizAttempt extends Model
         'quiz_id',
         'user_id',
         'score',
-        'total_points',
-        'percentage',
-        'passed',
         'time_spent_seconds',
+        'status',           // in_progress | completed | passed | failed | expired
+        'ai_feedback',
         'started_at',
-        'completed_at',
+        'submitted_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'passed' => 'boolean',
-            'percentage' => 'decimal:2',
-            'started_at' => 'datetime',
-            'completed_at' => 'datetime',
+            'score'            => 'float',
+            'started_at'       => 'datetime',
+            'submitted_at'     => 'datetime',
         ];
     }
 
-    public function quiz()
+    public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function answers()
+    public function answers(): HasMany
     {
-        return $this->hasMany(QuestionAnswer::class);
+        return $this->hasMany(QuizAttemptAnswer::class);
+    }
+    public function getIsPastedAttribute(): bool
+    {
+        return $this->score !== null
+            && $this->quiz
+            && $this->score >= $this->quiz->passing_score;
+    }
+
+    public function getTimeSpentFormattedAttribute(): string
+    {
+        $minutes = intdiv($this->time_spent_seconds ?? 0, 60);
+        $seconds = ($this->time_spent_seconds ?? 0) % 60;
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
     }
 }

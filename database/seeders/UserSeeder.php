@@ -1,19 +1,16 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // === АДМИН ===
+        // === ADMIN ===
         $admin = User::create([
-            'name' => 'Админ',
+            'name' => 'Admin',
             'email' => 'admin@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'admin',
@@ -23,12 +20,11 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
         UserProfile::create([
             'user_id' => $admin->id,
-            'language' => 'mk',
+            'language' => 'en',
         ]);
-
-        // === НАСТАВНИК ===
+        // === TEACHER ===
         $teacher = User::create([
-            'name' => 'Марија Петрова',
+            'name' => 'Maria Petrova',
             'email' => 'teacher@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'teacher',
@@ -38,13 +34,12 @@ class UserSeeder extends Seeder
         $teacher->assignRole('teacher');
         UserProfile::create([
             'user_id' => $teacher->id,
-            'school' => 'ОУ Кирил и Методиј',
-            'language' => 'mk',
+            'school' => 'OU Kiril and Metodij',
+            'language' => 'en',
         ]);
-
-        // === РОДИТЕЛ ===
+        // === PARENT ===
         $parent = User::create([
-            'name' => 'Иван Стојанов',
+            'name' => 'Ivan Stojanov',
             'email' => 'parent@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'parent',
@@ -54,12 +49,11 @@ class UserSeeder extends Seeder
         $parent->assignRole('parent');
         UserProfile::create([
             'user_id' => $parent->id,
-            'language' => 'mk',
+            'language' => 'en',
         ]);
-
-        // === ДЕЦА ===
+        // === CHILDREN ===
         $child1 = User::create([
-            'name' => 'Ана Стојанова',
+            'name' => 'Ana Stojanova',
             'email' => 'ana@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'child',
@@ -71,14 +65,13 @@ class UserSeeder extends Seeder
         $child1->assignRole('child');
         UserProfile::create([
             'user_id' => $child1->id,
-            'school' => 'ОУ Кирил и Методиј',
+            'school' => 'OU Kiril and Metodij',
             'grade' => '6',
-            'language' => 'mk',
+            'language' => 'en',
             'interests' => ['gaming', 'social_media', 'videos'],
         ]);
-
         $child2 = User::create([
-            'name' => 'Марко Стојанов',
+            'name' => 'Marko Stojanov',
             'email' => 'marko@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'child',
@@ -90,14 +83,13 @@ class UserSeeder extends Seeder
         $child2->assignRole('child');
         UserProfile::create([
             'user_id' => $child2->id,
-            'school' => 'ОУ Кирил и Методиј',
+            'school' => 'OU Kiril and Metodij',
             'grade' => '4',
-            'language' => 'mk',
+            'language' => 'en',
             'interests' => ['gaming', 'youtube'],
         ]);
-
         $child3 = User::create([
-            'name' => 'Елена Николова',
+            'name' => 'Elena Nikolova',
             'email' => 'elena@cyberbuddy.mk',
             'password' => Hash::make('password123'),
             'role' => 'child',
@@ -108,9 +100,9 @@ class UserSeeder extends Seeder
         $child3->assignRole('child');
         UserProfile::create([
             'user_id' => $child3->id,
-            'school' => 'ОУ Гоце Делчев',
+            'school' => 'OU Goce Delchev',
             'grade' => '7',
-            'language' => 'mk',
+            'language' => 'en',
             'interests' => ['social_media', 'music', 'art'],
         ]);
     }

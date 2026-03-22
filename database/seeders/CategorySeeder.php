@@ -1,120 +1,114 @@
 <?php
-
 namespace Database\Seeders;
-
 use App\Models\Category;
 use Illuminate\Database\Seeder;
-
 class CategorySeeder extends Seeder
 {
     public function run(): void
     {
         $categories = [
             [
-                'name' => 'Онлајн Безбедност',
+                'name' => 'Online Safety',
                 'slug' => 'online-safety',
-                'description' => 'Научи како да бидеш безбеден на интернет',
-                'icon' => '🛡️',
+                'description' => 'Learn how to stay safe on the internet',
+                'icon' => 'shield',
                 'sort_order' => 1,
                 'children' => [
                     [
-                        'name' => 'Лозинки и Автентикација',
+                        'name' => 'Passwords and Authentication',
                         'slug' => 'passwords-auth',
-                        'description' => 'Како да креираш и чуваш силни лозинки',
-                        'icon' => '🔑',
+                        'description' => 'How to create and keep strong passwords',
+                        'icon' => 'key',
                         'sort_order' => 1,
                     ],
                     [
-                        'name' => 'Фишинг и Измами',
+                        'name' => 'Phishing and Scams',
                         'slug' => 'phishing-scams',
-                        'description' => 'Препознавање на онлајн измами',
-                        'icon' => '🎣',
+                        'description' => 'Recognize online scams',
+                        'icon' => 'hook',
                         'sort_order' => 2,
                     ],
                     [
-                        'name' => 'Безбедно Пребарување',
+                        'name' => 'Safe Browsing',
                         'slug' => 'safe-browsing',
-                        'description' => 'Како безбедно да пребаруваш на интернет',
-                        'icon' => '🌐',
+                        'description' => 'How to browse the web safely',
+                        'icon' => 'globe',
                         'sort_order' => 3,
                     ],
                 ],
             ],
             [
-                'name' => 'Социјални Мрежи',
+                'name' => 'Social Media',
                 'slug' => 'social-media',
-                'description' => 'Безбедно користење на социјални мрежи',
-                'icon' => '📱',
+                'description' => 'Use social networks safely',
+                'icon' => 'mobile',
                 'sort_order' => 2,
                 'children' => [
                     [
-                        'name' => 'Приватност на Профил',
+                        'name' => 'Profile Privacy',
                         'slug' => 'profile-privacy',
-                        'description' => 'Заштита на личните информации',
-                        'icon' => '🔒',
+                        'description' => 'Protect your personal information',
+                        'icon' => 'lock',
                         'sort_order' => 1,
                     ],
                     [
-                        'name' => 'Дигитален Отпечаток',
+                        'name' => 'Digital Footprint',
                         'slug' => 'digital-footprint',
-                        'description' => 'Што оставаш зад себе на интернет',
-                        'icon' => '👣',
+                        'description' => 'What you leave behind online',
+                        'icon' => 'footprint',
                         'sort_order' => 2,
                     ],
                 ],
             ],
             [
-                'name' => 'Сајбер Булинг',
+                'name' => 'Cyberbullying',
                 'slug' => 'cyberbullying',
-                'description' => 'Препознавање и справување со онлајн малтретирање',
-                'icon' => '🚫',
+                'description' => 'Recognize and respond to online bullying',
+                'icon' => 'ban',
                 'sort_order' => 3,
                 'children' => [
                     [
-                        'name' => 'Препознавање Булинг',
+                        'name' => 'Recognizing Bullying',
                         'slug' => 'recognizing-bullying',
-                        'description' => 'Како да препознаеш сајбер булинг',
-                        'icon' => '👀',
+                        'description' => 'How to spot cyberbullying',
+                        'icon' => 'eye',
                         'sort_order' => 1,
                     ],
                     [
-                        'name' => 'Реагирaње и Пријавување',
+                        'name' => 'Responding and Reporting',
                         'slug' => 'reporting-bullying',
-                        'description' => 'Што да направиш ако си жртва или сведок',
-                        'icon' => '🆘',
+                        'description' => 'What to do if you are a target or a witness',
+                        'icon' => 'sos',
                         'sort_order' => 2,
                     ],
                 ],
             ],
             [
-                'name' => 'Лични Податоци',
+                'name' => 'Personal Data',
                 'slug' => 'personal-data',
-                'description' => 'Заштита на личните информации онлајн',
-                'icon' => '🔐',
+                'description' => 'Protect personal information online',
+                'icon' => 'safe',
                 'sort_order' => 4,
             ],
             [
-                'name' => 'Дигитално Здравје',
+                'name' => 'Digital Wellness',
                 'slug' => 'digital-wellness',
-                'description' => 'Баланс помеѓу онлајн и офлајн живот',
-                'icon' => '💚',
+                'description' => 'Balance online and offline life',
+                'icon' => 'heart',
                 'sort_order' => 5,
             ],
             [
-                'name' => 'Гејминг Безбедност',
+                'name' => 'Gaming Safety',
                 'slug' => 'gaming-safety',
-                'description' => 'Безбедно играње онлајн игри',
-                'icon' => '🎮',
+                'description' => 'Play online games safely',
+                'icon' => 'gamepad',
                 'sort_order' => 6,
             ],
         ];
-
         foreach ($categories as $categoryData) {
             $children = $categoryData['children'] ?? [];
             unset($categoryData['children']);
-
             $parent = Category::create($categoryData);
-
             foreach ($children as $childData) {
                 $childData['parent_id'] = $parent->id;
                 Category::create($childData);

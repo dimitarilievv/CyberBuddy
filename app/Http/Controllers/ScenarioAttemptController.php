@@ -22,7 +22,7 @@ class ScenarioAttemptController extends Controller
         ]);
 
         if (!$this->attemptService->canAttempt($scenarioId, auth()->id())) {
-            return back()->with('error', 'Го достигна максималниот број обиди.');
+            return back()->with('error', 'You have reached max number of attempts.');
         }
 
         $attempt = $this->attemptService->submitAttempt(
