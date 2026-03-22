@@ -18,6 +18,14 @@ class DatabaseSeeder extends Seeder
             LessonSeeder::class,
             ScenarioSeeder::class,
             QuizSeeder::class,
+            CertificateSeeder::class,
+            ScenarioAttemptSeeder::class,
+            QuestionAnswerSeeder::class,
+            MediaFileSeeder::class,
+            QuestionSeeder::class,
+            ScenarioChoiceSeeder::class,
+            QuizAttemptSeeder::class,
+            ScenarioChoiceSeeder::class
         ]);
     }
 }

@@ -49,9 +49,9 @@ class QuizAttemptSeeder extends Seeder
             $attempt = QuizAttempt::create([
                 'quiz_id'            => $quiz->id,
                 'user_id'            => $user->id,
-                'score'              => $isInProgress ? null : $this->randomScore(),
+                'score'              => $isInProgress ? null : (int) $this->randomScore(),
                 'time_spent_seconds' => $isInProgress ? null : $timeSpent,
-                'status'             => $isInProgress ? 'in_progress' : null,
+                'status'             => $isInProgress ? 'in_progress' : 'completed',
                 'ai_feedback'        => null,
                 'started_at'         => $startedAt,
                 'completed_at'       => $isInProgress ? null : $submittedAt,
@@ -85,21 +85,25 @@ class QuizAttemptSeeder extends Seeder
             ]);
         }
     }
-    private function randomScore(): float
+    private function randomScore(): int
     {
         $ranges = [
             [50, 69, 20],
             [70, 84, 45],
             [85, 100, 35],
         ];
+
         $rand       = rand(1, 100);
         $cumulative = 0;
+
         foreach ($ranges as [$min, $max, $weight]) {
             $cumulative += $weight;
+
             if ($rand <= $cumulative) {
-                return (float) rand($min * 100, $max * 100) / 100;
+                return rand($min, $max);
             }
         }
-        return 75.0;
+
+        return 75;
     }
 }
