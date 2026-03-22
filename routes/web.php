@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\MediaFileController;
+use App\Http\Controllers\QuestionAnswerController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizAttemptController;
 use App\Http\Controllers\ScenarioAttemptController;
@@ -74,6 +75,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quizzes/{quizId}/questions', [QuestionController::class, 'index'])->name('questions.index');
     Route::post('/questions/store', [QuestionController::class, 'store'])->name('questions.store');
     Route::post('/questions/{questionId}/check', [QuestionController::class, 'checkAnswer'])->name('questions.checkAnswer');
+
+    //QuestionAnswers
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/quiz/attempt/{attemptId}', [QuestionAnswerController::class, 'index'])->name('quiz.attempt.show');
+        Route::post('/quiz/attempt/{attemptId}/submit', [QuestionAnswerController::class, 'submit'])->name('quiz.attempt.submit');
+        Route::get('/quiz/attempt/{attemptId}/evaluate', [QuestionAnswerController::class, 'evaluate'])->name('quiz.attempt.evaluate');
+    });
 
     // Quizzes
     Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
