@@ -49,7 +49,7 @@ class QuizAttemptSeeder extends Seeder
             $attempt = QuizAttempt::create([
                 'quiz_id'            => $quiz->id,
                 'user_id'            => $user->id,
-                'score'              => $isInProgress ? null : (int) $this->randomScore(),
+                'score'              => $isInProgress ? 0 : (int) $this->randomScore(),
                 'time_spent_seconds' => $isInProgress ? null : $timeSpent,
                 'status'             => $isInProgress ? 'in_progress' : 'completed',
                 'ai_feedback'        => null,

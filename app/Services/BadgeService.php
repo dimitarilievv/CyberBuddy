@@ -2,27 +2,38 @@
 
 namespace App\Services;
 
-use App\Models\Badge;
 use App\Models\User;
 use App\Models\UserProgress;
 use App\Models\QuizAttempt;
 use App\Models\ScenarioAttempt;
+use App\Models\AIInteraction;
+use App\Repositories\Interfaces\BadgeRepositoryInterface;
 
 class BadgeService
 {
+    protected BadgeRepositoryInterface $badgeRepository;
+
+    public function __construct(BadgeRepositoryInterface $badgeRepository)
+    {
+        $this->badgeRepository = $badgeRepository;
+    }
+
     public function checkAndAward(User $user): array
     {
         $awarded = [];
 
-        $badges = Badge::where('is_active', true)->get();
+        $user->loadMissing('badges');
+
+        $badges = $this->badgeRepository->getActiveBadges();
 
         foreach ($badges as $badge) {
-            if ($user->badges->contains($badge->id)) {
+            if ($this->badgeRepository->userHasBadge($user, $badge)) {
                 continue;
             }
 
             if ($this->meetsCriteria($user, $badge)) {
-                $user->badges()->attach($badge->id, ['earned_at' => now()]);
+                $this->badgeRepository->attachBadgeToUser($user, $badge);
+
                 $awarded[] = $badge;
             }
         }
@@ -30,29 +41,39 @@ class BadgeService
         return $awarded;
     }
 
-    private function meetsCriteria(User $user, Badge $badge): bool
+    private function meetsCriteria(User $user, $badge): bool
     {
-        $criteria = $badge->criteria;
+        $criteria = $badge->criteria ?? [];
 
         if (isset($criteria['lessons_completed'])) {
-            $count = UserProgress::where('user_id', $user->id)->where('status', 'completed')->count();
+            $count = UserProgress::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->count();
+
             if ($count < $criteria['lessons_completed']) return false;
         }
 
         if (isset($criteria['modules_completed'])) {
-            $count = $user->enrollments()->where('status', 'completed')->count();
+            $count = $user->enrollments()
+                ->where('status', 'completed')
+                ->count();
+
             if ($count < $criteria['modules_completed']) return false;
         }
 
         if (isset($criteria['quiz_score'])) {
-            $hasPerfect = QuizAttempt::where('user_id', $user->id)
-                ->where('percentage', '>=', $criteria['quiz_score'])
+            $hasScore = QuizAttempt::where('user_id', $user->id)
+                ->where('score', '>=', $criteria['quiz_score'])
                 ->exists();
-            if (!$hasPerfect) return false;
+
+            if (!$hasScore) return false;
         }
 
         if (isset($criteria['quizzes_passed'])) {
-            $count = QuizAttempt::where('user_id', $user->id)->where('passed', true)->count();
+            $count = QuizAttempt::where('user_id', $user->id)
+                ->where('status', 'passed')
+                ->count();
+
             if ($count < $criteria['quizzes_passed']) return false;
         }
 
@@ -60,11 +81,13 @@ class BadgeService
             $count = ScenarioAttempt::where('user_id', $user->id)
                 ->where('safety_score', 100)
                 ->count();
+
             if ($count < $criteria['perfect_scenarios']) return false;
         }
 
         if (isset($criteria['ai_interactions'])) {
-            $count = \App\Models\AiInteraction::where('user_id', $user->id)->count();
+            $count = AIInteraction::where('user_id', $user->id)->count();
+
             if ($count < $criteria['ai_interactions']) return false;
         }
 

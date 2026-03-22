@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\QuestionAnswerController;
@@ -113,6 +114,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [ScenarioChoiceController::class, 'index'])->name('scenarios.choices.index');
         Route::post('/store', [ScenarioChoiceController::class, 'store'])->name('scenarios.choices.store');
         Route::get('/scenario-choice/{choice}/evaluate', [ScenarioChoiceController::class, 'evaluate'])->name('scenarios.choices.evaluate');
+    });
+
+    // Badges
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/badges', [BadgeController::class, 'index'])->name('badges.index');
+        Route::post('/badges/check', [BadgeController::class, 'checkAndAward'])->name('badges.check');
     });
 
     // Profile

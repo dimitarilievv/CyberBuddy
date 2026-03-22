@@ -11,6 +11,7 @@ use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\QuestionAnswerRepositoryInterface;
 use App\Repositories\Interfaces\CertificateRepositoryInterface;
+use App\Repositories\Interfaces\BadgeRepositoryInterface;
 
 use App\Repositories\ModuleRepository;
 use App\Repositories\QuizRepository;
@@ -19,6 +20,7 @@ use App\Repositories\EnrollmentRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\QuestionAnswerRepository;
 use App\Repositories\CertificateRepository;
+use App\Repositories\BadgeRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -31,5 +33,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(QuestionAnswerRepositoryInterface::class, QuestionAnswerRepository::class);
         $this->app->bind(CertificateRepositoryInterface::class, CertificateRepository::class);
+        $this->app->bind(BadgeRepositoryInterface::class, BadgeRepository::class);
     }
 }
