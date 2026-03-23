@@ -25,10 +25,13 @@ class DatabaseSeeder extends Seeder
             QuestionSeeder::class,
             QuizAttemptSeeder::class,
             ScenarioChoiceSeeder::class,
+            EnrollmentSeeder::class,
             ResourceSeeder::class,
             NotificationSeeder::class,
             ResourceSeeder::class,
-            UserProgressSeeder::class
+            UserProgressSeeder::class,
+            UserBadgeSeeder::class
+
         ]);
     }
 }
