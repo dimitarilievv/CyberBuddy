@@ -23,6 +23,8 @@ use App\Http\Controllers\UserProgressController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\UserBadgeController;
 use App\Http\Controllers\AiContentSuggestionController;
+use App\Http\Controllers\LeaderboardController;
+
 
 Route::view('/', 'welcome');
 
@@ -159,6 +161,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
 
+    // Leaderboard routes
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+        Route::get('/my-stats', [LeaderboardController::class, 'myStats'])->name('leaderboard.my_stats');
+    });
     // Notifications
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index'])

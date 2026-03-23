@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Repositories\AiContentSuggestionRepository;
 use App\Repositories\Interfaces\AiContentSuggestionRepositoryInterface;
+use App\Repositories\Interfaces\LeaderboardRepositoryInterface;
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
 use App\Repositories\Interfaces\UserBadgeRepositoryInterface;
 use App\Repositories\Interfaces\UserProgressRepositoryInterface;
+use App\Repositories\LeaderboardRepository;
 use App\Repositories\ResourceRepository;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
 use App\Repositories\NotificationRepository;
@@ -49,5 +51,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserProgressRepositoryInterface::class, UserProgressRepository::class);
         $this->app->bind(UserBadgeRepositoryInterface::class, UserBadgeRepository::class);
         $this->app->bind(AiContentSuggestionRepositoryInterface::class, AiContentSuggestionRepository::class);
+        $this->app->bind(LeaderboardRepositoryInterface::class, LeaderboardRepository::class);
+
     }
 }

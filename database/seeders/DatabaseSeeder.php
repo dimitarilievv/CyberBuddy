@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
             NotificationSeeder::class,
             ResourceSeeder::class,
             UserProgressSeeder::class,
-            UserBadgeSeeder::class
+            UserBadgeSeeder::class,
+            LeaderboardSeeder::class
 
         ]);
     }
