@@ -19,6 +19,8 @@ use App\Http\Controllers\Parent\ParentDashboardController;
 use App\Http\Controllers\Teacher\TeacherDashboardController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserProgressController;
+use App\Http\Controllers\EnrollmentController;
 
 Route::view('/', 'welcome');
 
@@ -76,6 +78,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/lessons/{lesson}/resources/{resource}', [ResourceController::class, 'show'])->name('resources.show');
     });
 
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/progress', [UserProgressController::class, 'index'])->name('user_progress.index');
+        Route::get('/lessons/{lesson}/progress', [UserProgressController::class, 'show'])->name('user_progress.show');
+    });
+
+
 
     // Modules
     Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
@@ -119,6 +127,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/attempts/submit', [ScenarioAttemptController::class, 'submit'])->name('scenarios.attempts.submit');
     });
 
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/my-enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+        Route::get('/my-completed', [EnrollmentController::class, 'completed'])->name('enrollments.completed');
+        Route::post('/modules/{moduleId}/enroll', [EnrollmentController::class, 'enroll'])->name('modules.enroll');
+        Route::get('/modules/{moduleId}/enrollments', [EnrollmentController::class, 'moduleEnrollments'])->name('enrollments.module');
+        Route::get('/modules/{moduleId}/is-enrolled', [EnrollmentController::class, 'isEnrolled'])->name('enrollments.is_enrolled');
+    });
     //Scenario choices
     Route::prefix('scenarios/{scenario}/choices')->group(function () {
         Route::get('/', [ScenarioChoiceController::class, 'index'])->name('scenarios.choices.index');
