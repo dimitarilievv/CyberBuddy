@@ -24,7 +24,7 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\UserBadgeController;
 use App\Http\Controllers\AiContentSuggestionController;
 use App\Http\Controllers\LeaderboardController;
-
+use App\Http\Controllers\ActivityLogController;
 
 Route::view('/', 'welcome');
 
@@ -206,6 +206,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::post('/ai-suggestions', [AiContentSuggestionController::class, 'store'])
             ->name('ai_suggestions.store');
+    });
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
+        Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show'])->name('activity_logs.show');
     });
 });
 
