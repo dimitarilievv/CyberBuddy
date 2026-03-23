@@ -21,6 +21,7 @@ use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserProgressController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\UserBadgeController;
 
 Route::view('/', 'welcome');
 
@@ -150,7 +151,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Profile
     Route::view('profile', 'profile')->name('profile');
 
-
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/my-badges', [UserBadgeController::class, 'myBadges'])->name('user_badges.index');
+        Route::post('/award-badge', [UserBadgeController::class, 'award'])->name('user_badges.award');
+        Route::get('/badge/{badgeId}/users', [UserBadgeController::class, 'usersWithBadge'])->name('user_badges.users');
+    });
 
 
     // Notifications
