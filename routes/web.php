@@ -22,6 +22,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserProgressController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\UserBadgeController;
+use App\Http\Controllers\AiContentSuggestionController;
 
 Route::view('/', 'welcome');
 
@@ -177,6 +178,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::delete('/notifications', [NotificationController::class, 'destroyAll'])
             ->name('notifications.destroy_all');
+    });
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        // Teacher review
+        Route::middleware(['role:teacher'])->group(function () {
+            Route::get('/ai-suggestions', [AiContentSuggestionController::class, 'index'])
+                ->name('ai_suggestions.index');
+
+            Route::patch('/ai-suggestions/{id}/approve', [AiContentSuggestionController::class, 'approve'])
+                ->name('ai_suggestions.approve');
+
+            Route::patch('/ai-suggestions/{id}/reject', [AiContentSuggestionController::class, 'reject'])
+                ->name('ai_suggestions.reject');
+        });
+
+        // Optional: create (for testing) - you can restrict this too
+        Route::get('/ai-suggestions/create', [AiContentSuggestionController::class, 'create'])
+            ->name('ai_suggestions.create');
+
+        Route::post('/ai-suggestions', [AiContentSuggestionController::class, 'store'])
+            ->name('ai_suggestions.store');
     });
 });
 
