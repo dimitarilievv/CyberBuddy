@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             ScenarioChoiceSeeder::class,
             ResourceSeeder::class,
             NotificationSeeder::class,
+            ResourceSeeder::class,
+            UserProgressSeeder::class
         ]);
     }
 }
