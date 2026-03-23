@@ -17,6 +17,7 @@ use App\Http\Controllers\ScenarioController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Parent\ParentDashboardController;
 use App\Http\Controllers\Teacher\TeacherDashboardController;
+use App\Http\Controllers\ResourceController;
 
 Route::view('/', 'welcome');
 
@@ -66,6 +67,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/lessons/{lesson}/media', [MediaFileController::class, 'store'])->name('media.store');
         Route::delete('/media/{media}', [MediaFileController::class, 'destroy'])->name('media.destroy');
     });
+
+
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/lessons/{lesson}/resources', [ResourceController::class, 'index'])->name('resources.index');
+        Route::get('/lessons/{lesson}/resources/{resource}', [ResourceController::class, 'show'])->name('resources.show');
+    });
+
 
     // Modules
     Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
@@ -124,6 +133,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Profile
     Route::view('profile', 'profile')->name('profile');
+
+
+
 });
 
 

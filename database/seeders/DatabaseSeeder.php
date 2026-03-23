@@ -25,7 +25,8 @@ class DatabaseSeeder extends Seeder
             QuestionSeeder::class,
             ScenarioChoiceSeeder::class,
             QuizAttemptSeeder::class,
-            ScenarioChoiceSeeder::class
+            ScenarioChoiceSeeder::class,
+            ResourceSeeder::class
         ]);
     }
 }
