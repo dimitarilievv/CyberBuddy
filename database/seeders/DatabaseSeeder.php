@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
             QuestionAnswerSeeder::class,
             MediaFileSeeder::class,
             QuestionSeeder::class,
-            ScenarioChoiceSeeder::class,
             QuizAttemptSeeder::class,
             ScenarioChoiceSeeder::class,
-            ResourceSeeder::class
+            ResourceSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Interfaces\ResourceRepositoryInterface;
 use App\Repositories\ResourceRepository;
+use App\Repositories\Interfaces\NotificationRepositoryInterface;
+use App\Repositories\NotificationRepository;
 use Illuminate\Support\ServiceProvider;
 
 use App\Repositories\Interfaces\ModuleRepositoryInterface;
@@ -37,6 +39,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CertificateRepositoryInterface::class, CertificateRepository::class);
         $this->app->bind(BadgeRepositoryInterface::class, BadgeRepository::class);
         $this->app->bind(ResourceRepositoryInterface::class, ResourceRepository::class);
-
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
     }
 }

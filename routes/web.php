@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Parent\ParentDashboardController;
 use App\Http\Controllers\Teacher\TeacherDashboardController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\NotificationController;
 
 Route::view('/', 'welcome');
 
@@ -136,6 +137,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 
+
+    // Notifications
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/notifications', [NotificationController::class, 'index'])
+            ->name('notifications.index');
+
+        Route::get('/notifications/unread', [NotificationController::class, 'unread'])
+            ->name('notifications.unread');
+
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+            ->name('notifications.read');
+
+        Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+            ->name('notifications.read_all');
+
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
+            ->name('notifications.destroy');
+
+        Route::delete('/notifications', [NotificationController::class, 'destroyAll'])
+            ->name('notifications.destroy_all');
+    });
 });
 
 
