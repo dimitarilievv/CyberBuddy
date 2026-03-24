@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             ResourceSeeder::class,
             UserProgressSeeder::class,
             UserBadgeSeeder::class,
-            LeaderboardSeeder::class
+            LeaderboardSeeder::class,
+            AiInteractionSeeder::class
 
         ]);
     }

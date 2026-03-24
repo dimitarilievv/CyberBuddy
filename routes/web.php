@@ -25,6 +25,8 @@ use App\Http\Controllers\UserBadgeController;
 use App\Http\Controllers\AiContentSuggestionController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AiInteractionController;
+
 
 Route::view('/', 'welcome');
 
@@ -211,6 +213,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity_logs.index');
         Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show'])->name('activity_logs.show');
+    });
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/ai-interactions', [AiInteractionController::class, 'index'])->name('ai_interactions.index');
+        Route::post('/ai-interactions', [AiInteractionController::class, 'store'])->name('ai_interactions.store');
     });
 });
 
