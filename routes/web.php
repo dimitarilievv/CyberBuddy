@@ -26,6 +26,7 @@ use App\Http\Controllers\AiContentSuggestionController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AiInteractionController;
+use App\Http\Controllers\ReportedContentController;
 
 
 Route::view('/', 'welcome');
@@ -218,6 +219,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/ai-interactions', [AiInteractionController::class, 'index'])->name('ai_interactions.index');
         Route::post('/ai-interactions', [AiInteractionController::class, 'store'])->name('ai_interactions.store');
+    });
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/reported-contents', [ReportedContentController::class, 'index'])
+            ->name('reported_contents.index');
+
+        Route::get('/reported-contents/create', [ReportedContentController::class, 'create'])
+            ->name('reported_contents.create');
+
+        Route::post('/reported-contents', [ReportedContentController::class, 'store'])
+            ->name('reported_contents.store');
+
+        Route::get('/reported-contents/{id}', [ReportedContentController::class, 'show'])
+            ->name('reported_contents.show');
+
+        Route::patch('/reported-contents/{id}/review', [ReportedContentController::class, 'review'])
+            ->name('reported_contents.review');
     });
 });
 

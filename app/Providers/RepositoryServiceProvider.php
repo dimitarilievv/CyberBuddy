@@ -37,6 +37,8 @@ use App\Repositories\CertificateRepository;
 use App\Repositories\BadgeRepository;
 use App\Repositories\Interfaces\ActivityLogRepositoryInterface;
 use App\Repositories\ActivityLogRepository;
+use App\Repositories\Interfaces\ReportedContentRepositoryInterface;
+use App\Repositories\ReportedContentRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -58,6 +60,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(LeaderboardRepositoryInterface::class, LeaderboardRepository::class);
         $this->app->bind(ActivityLogRepositoryInterface::class, ActivityLogRepository::class);
         $this->app->bind(AiInteractionRepositoryInterface::class, AiInteractionRepository::class);
-
+        $this->app->bind(ReportedContentRepositoryInterface::class, ReportedContentRepository::class);
     }
 }
