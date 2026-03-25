@@ -29,6 +29,8 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AiInteractionController;
 use App\Http\Controllers\ReportedContentController;
+use App\Http\Controllers\ChildDashboardController;
+
 
 
 Route::view('/', 'welcome');
@@ -58,9 +60,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
     });
 
-    Route::middleware(['auth', 'verified', 'role:child'])->prefix('child')->group(function () {
-        Route::view('/dashboard', 'child.dashboard')->name('child.dashboard');
-    });
+//    Route::middleware(['auth', 'verified', 'role:child'])->prefix('child')->group(function () {
+//        Route::view('/dashboard', 'child.dashboard')->name('child.dashboard');
+//    });
+    Route::get('/child/dashboard', [ChildDashboardController::class, 'index'])
+        ->name('child.dashboard')
+        ->middleware(['auth', 'verified', 'role:child']);
 
 
     // Certificates

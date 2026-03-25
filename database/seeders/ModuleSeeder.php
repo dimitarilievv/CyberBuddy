@@ -23,6 +23,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 1,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'recommended'],
+                'thumbnail' => '/img/modules/pass.png',
             ],
             [
                 'title' => 'Recognize Phishing',
@@ -36,6 +37,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 2,
                 'is_published' => true,
                 'tags' => ['intermediate', 'scenario', 'popular'],
+                'thumbnail' => '/img/modules/pass.png',
             ],
             [
                 'title' => 'Social Media Safety',
@@ -49,6 +51,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 3,
                 'is_published' => true,
                 'tags' => ['beginner', 'popular', 'new'],
+                'thumbnail' => '/img/modules/online.png',
             ],
             [
                 'title' => 'Stop Cyberbullying',
@@ -62,6 +65,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 4,
                 'is_published' => true,
                 'tags' => ['beginner', 'mandatory', 'scenario'],
+                'thumbnail' => '/img/modules/cyber.jpeg',
             ],
             [
                 'title' => 'Safe Gaming',
@@ -75,6 +79,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 5,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'new'],
+                'thumbnail' => '/img/modules/gaming.png',
             ],
             [
                 'title' => 'Parent Guide: Online Safety',
@@ -88,6 +93,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 6,
                 'is_published' => true,
                 'tags' => ['recommended'],
+                'thumbnail' => '/img/modules/online.png',
             ],
             [
                 'title' => 'Device Security',
