@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAIContentController;
+use App\Http\Controllers\AIContentController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\MediaFileController;
@@ -39,6 +41,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboards
     Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        // AI Content Generation
+        Route::get('/ai/lesson', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'showLessonForm'])->name('admin.ai.lesson.form');
+        Route::post('/ai/lesson', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'generateLesson'])->name('admin.ai.lesson.generate');
+        Route::get('/ai/quiz', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'showQuizForm'])->name('admin.ai.quiz.form');
+        Route::post('/ai/quiz', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'generateQuiz'])->name('admin.ai.quiz.generate');
+        Route::get('/ai/scenario', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'showScenarioForm'])->name('admin.ai.scenario.form');
+        Route::post('/ai/scenario', [\App\Http\Controllers\Admin\AdminAIContentController::class, 'generateScenario'])->name('admin.ai.scenario.generate');
     });
 
     Route::middleware(['auth', 'verified', 'role:parent'])->prefix('parent')->group(function () {
@@ -236,6 +245,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::patch('/reported-contents/{id}/review', [ReportedContentController::class, 'review'])
             ->name('reported_contents.review');
+    });
+
+    Route::prefix('admin/ai')->name('admin.ai.')->middleware(['auth', 'role:admin'])->group(function () {
+        Route::get('/lesson',    [AdminAIContentController::class, 'showLessonForm'])->name('lesson.form');
+        Route::post('/lesson',   [AdminAIContentController::class, 'generateLesson'])->name('lesson.generate');
+
+        Route::get('/quiz',      [AdminAIContentController::class, 'showQuizForm'])->name('quiz.form');
+        Route::post('/quiz',     [AdminAIContentController::class, 'generateQuiz'])->name('quiz.generate');
+
+        Route::get('/scenario',  [AdminAIContentController::class, 'showScenarioForm'])->name('scenario.form');
+        Route::post('/scenario', [AdminAIContentController::class, 'generateScenario'])->name('scenario.generate');
     });
 });
 

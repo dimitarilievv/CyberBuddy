@@ -89,9 +89,69 @@ class ModuleSeeder extends Seeder
                 'is_published' => true,
                 'tags' => ['recommended'],
             ],
+            [
+                'title' => 'Device Security',
+                'slug' => 'device-security',
+                'description' => 'Learn how to keep your devices safe from hackers and viruses.',
+                'audience' => 'child',
+                'difficulty' => 'beginner',
+                'age_group' => '10-13',
+                'category_slug' => 'device-safety',
+                'estimated_duration' => 20,
+                'sort_order' => 7,
+                'is_published' => true,
+                'tags' => ['beginner', 'interactive', 'recommended'],
+            ],
+            [
+                'title' => 'Privacy Settings',
+                'slug' => 'privacy-settings',
+                'description' => 'Understand privacy settings and how to protect your personal information online.',
+                'audience' => 'child',
+                'difficulty' => 'beginner',
+                'age_group' => '10-13',
+                'category_slug' => 'privacy',
+                'estimated_duration' => 15,
+                'sort_order' => 8,
+                'is_published' => true,
+                'tags' => ['beginner', 'privacy', 'interactive'],
+            ],
+            [
+                'title' => 'Digital Footprint',
+                'slug' => 'digital-footprint',
+                'description' => 'Learn what a digital footprint is and how to manage it.',
+                'audience' => 'child',
+                'difficulty' => 'beginner',
+                'age_group' => '10-13',
+                'category_slug' => 'privacy',
+                'estimated_duration' => 15,
+                'sort_order' => 9,
+                'is_published' => true,
+                'tags' => ['beginner', 'privacy', 'recommended'],
+            ],
+            [
+                'title' => 'Fake News Detection',
+                'slug' => 'fake-news-detection',
+                'description' => 'Learn how to spot fake news and misinformation online.',
+                'audience' => 'child',
+                'difficulty' => 'intermediate',
+                'age_group' => '10-13',
+                'category_slug' => 'media-literacy',
+                'estimated_duration' => 20,
+                'sort_order' => 10,
+                'is_published' => true,
+                'tags' => ['intermediate', 'media', 'critical-thinking'],
+            ],
         ];
         foreach ($modules as $moduleData) {
             $category = Category::where('slug', $moduleData['category_slug'])->first();
+            if (!$category) {
+                // Create the category if it does not exist
+                $category = Category::create([
+                    'slug' => $moduleData['category_slug'],
+                    'name' => ucwords(str_replace(['-', '_'], ' ', $moduleData['category_slug'])), // FIXED: use 'name' instead of 'title'
+                    'description' => $moduleData['category_slug'] . ' category',
+                ]);
+            }
             $tagSlugs = $moduleData['tags'];
             unset($moduleData['category_slug'], $moduleData['tags']);
             $moduleData['category_id'] = $category->id;

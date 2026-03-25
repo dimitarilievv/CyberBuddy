@@ -69,7 +69,7 @@ class LessonSeeder extends Seeder
                 'is_published' => true,
             ],
         ];
-        // Lessons for the "Recognize Phishing" module
+
         $phishingModule = Module::where('slug', 'recognize-phishing')->first();
         $phishingLessons = [
             [
@@ -102,8 +102,115 @@ class LessonSeeder extends Seeder
                 'is_published' => true,
             ],
         ];
-        foreach (array_merge($lessons, $phishingLessons) as $lesson) {
-            Lesson::create($lesson);
+        $deviceModule = Module::where('slug', 'device-security')->first();
+        $deviceLessons = [
+            [
+                'module_id' => $deviceModule->id,
+                'title' => 'Why Updates Matter',
+                'slug' => 'why-updates-matter',
+                'content' => '<h2>Why Should You Update Your Device?</h2><p>Updates fix bugs and protect your device from hackers. Always install updates when you see them!</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 1,
+                'is_published' => true,
+            ],
+            [
+                'module_id' => $deviceModule->id,
+                'title' => 'Lock Your Device',
+                'slug' => 'lock-your-device',
+                'content' => '<h2>Locking Your Device</h2><p>Always use a PIN, password, or fingerprint to lock your phone or tablet. This keeps your information safe if you lose your device.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 2,
+                'is_published' => true,
+            ],
+            [
+                'module_id' => $deviceModule->id,
+                'title' => 'Safe App Downloads',
+                'slug' => 'safe-app-downloads',
+                'content' => '<h2>Downloading Apps Safely</h2><p>Only download apps from official stores like Google Play or the App Store. Avoid apps that ask for too many permissions.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 3,
+                'is_published' => true,
+            ],
+        ];
+        $privacyModule = Module::where('slug', 'privacy-settings')->first();
+        $privacyLessons = [
+            [
+                'module_id' => $privacyModule->id,
+                'title' => 'What is Privacy?',
+                'slug' => 'what-is-privacy',
+                'content' => '<h2>What is Privacy?</h2><p>Privacy means keeping your personal information safe from others. Learn how to control what you share online.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 1,
+                'is_published' => true,
+            ],
+            [
+                'module_id' => $privacyModule->id,
+                'title' => 'Privacy on Social Media',
+                'slug' => 'privacy-on-social-media',
+                'content' => '<h2>Privacy on Social Media</h2><p>Set your accounts to private and only accept friend requests from people you know.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 2,
+                'is_published' => true,
+            ],
+        ];
+        $footprintModule = Module::where('slug', 'digital-footprint')->first();
+        $footprintLessons = [
+            [
+                'module_id' => $footprintModule->id,
+                'title' => 'What is a Digital Footprint?',
+                'slug' => 'what-is-digital-footprint',
+                'content' => '<h2>Your Digital Footprint</h2><p>Everything you post, like, or share online leaves a trace. Think before you post!</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 1,
+                'is_published' => true,
+            ],
+            [
+                'module_id' => $footprintModule->id,
+                'title' => 'Cleaning Up Your Footprint',
+                'slug' => 'clean-up-footprint',
+                'content' => '<h2>How to Clean Up Your Digital Footprint</h2><p>Delete old posts, remove unused accounts, and check your privacy settings regularly.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 2,
+                'is_published' => true,
+            ],
+        ];
+        $fakeNewsModule = Module::where('slug', 'fake-news-detection')->first();
+        $fakeNewsLessons = [
+            [
+                'module_id' => $fakeNewsModule->id,
+                'title' => 'Spotting Fake News',
+                'slug' => 'spotting-fake-news',
+                'content' => '<h2>How to Spot Fake News</h2><p>Check the source, look for other reports, and ask an adult if you are unsure.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 1,
+                'is_published' => true,
+            ],
+            [
+                'module_id' => $fakeNewsModule->id,
+                'title' => 'Fact-Checking Online',
+                'slug' => 'fact-checking-online',
+                'content' => '<h2>Fact-Checking</h2><p>Use fact-checking websites and tools to verify information before sharing it.</p>',
+                'type' => 'text',
+                'estimated_minutes' => 5,
+                'sort_order' => 2,
+                'is_published' => true,
+            ],
+        ];
+        foreach (array_merge($lessons, $phishingLessons, $deviceLessons, $privacyLessons, $footprintLessons, $fakeNewsLessons) as $lesson) {
+            Lesson::updateOrCreate(
+                [
+                    'slug' => $lesson['slug']
+                ],
+                $lesson
+            );
         }
     }
 }

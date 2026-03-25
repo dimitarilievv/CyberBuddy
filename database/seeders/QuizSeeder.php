@@ -45,58 +45,61 @@ class QuizSeeder extends Seeder
                     'B' => 'False',
                 ],
                 'correct_answer' => ['B'],
-                'explanation' => 'False. If one password is leaked, all accounts are at risk.',
-                'points' => 1,
+                'explanation' => 'It is not safe to use the same password everywhere.',
+                'points' => 2,
                 'sort_order' => 2,
-            ],
-            [
-                'quiz_id' => $quiz->id,
-                'question_text' => 'What is the minimum length for a strong password?',
-                'type' => 'multiple_choice',
-                'options' => [
-                    'A' => '4',
-                    'B' => '6',
-                    'C' => '8',
-                    'D' => '12',
-                ],
-                'correct_answer' => ['D'],
-                'explanation' => 'A strong password should be at least 12 characters.',
-                'points' => 1,
-                'sort_order' => 3,
-            ],
-            [
-                'quiz_id' => $quiz->id,
-                'question_text' => 'Which of these should you avoid using as a password?',
-                'type' => 'multiple_choice',
-                'options' => [
-                    'A' => 'Your birthday',
-                    'B' => 'Your pet name',
-                    'C' => 'A random sentence with numbers',
-                    'D' => 'Your name + 123',
-                ],
-                'correct_answer' => ['C'],
-                'explanation' => 'A, B, and D are easy to guess. A random sentence with numbers is a better choice.',
-                'points' => 2,
-                'sort_order' => 4,
-            ],
-            [
-                'quiz_id' => $quiz->id,
-                'question_text' => 'Who is it safe to share your password with?',
-                'type' => 'multiple_choice',
-                'options' => [
-                    'A' => 'Your best friend',
-                    'B' => 'Your teacher',
-                    'C' => 'Your parent/guardian',
-                    'D' => 'No one',
-                ],
-                'correct_answer' => ['C'],
-                'explanation' => 'Only a parent or guardian should know your password. Do not share it with anyone else.',
-                'points' => 2,
-                'sort_order' => 5,
             ],
         ];
         foreach ($questions as $question) {
             Question::create($question);
         }
+        $deviceLesson = Lesson::where('slug', 'why-updates-matter')->first();
+        $quizDevice = Quiz::create([
+            'lesson_id' => $deviceLesson->id,
+            'title' => 'Quiz: Device Security',
+            'description' => 'Test your knowledge about device safety!',
+            'passing_score' => 60,
+            'time_limit_minutes' => 8,
+            'max_attempts' => 3,
+            'shuffle_questions' => true,
+            'show_correct_answers' => true,
+            'is_published' => true,
+        ]);
+        $privacyLesson = Lesson::where('slug', 'what-is-privacy')->first();
+        $quizPrivacy = Quiz::create([
+            'lesson_id' => $privacyLesson->id,
+            'title' => 'Quiz: Privacy Settings',
+            'description' => 'Test your knowledge about privacy online!',
+            'passing_score' => 60,
+            'time_limit_minutes' => 8,
+            'max_attempts' => 3,
+            'shuffle_questions' => true,
+            'show_correct_answers' => true,
+            'is_published' => true,
+        ]);
+        $footprintLesson = Lesson::where('slug', 'what-is-digital-footprint')->first();
+        $quizFootprint = Quiz::create([
+            'lesson_id' => $footprintLesson->id,
+            'title' => 'Quiz: Digital Footprint',
+            'description' => 'Test your knowledge about your digital footprint!',
+            'passing_score' => 60,
+            'time_limit_minutes' => 8,
+            'max_attempts' => 3,
+            'shuffle_questions' => true,
+            'show_correct_answers' => true,
+            'is_published' => true,
+        ]);
+        $fakeNewsLesson = Lesson::where('slug', 'spotting-fake-news')->first();
+        $quizFakeNews = Quiz::create([
+            'lesson_id' => $fakeNewsLesson->id,
+            'title' => 'Quiz: Fake News Detection',
+            'description' => 'Test your knowledge about spotting fake news!',
+            'passing_score' => 60,
+            'time_limit_minutes' => 8,
+            'max_attempts' => 3,
+            'shuffle_questions' => true,
+            'show_correct_answers' => true,
+            'is_published' => true,
+        ]);
     }
 }
