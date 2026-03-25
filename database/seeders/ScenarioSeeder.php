@@ -9,7 +9,6 @@ class ScenarioSeeder extends Seeder
     public function run(): void
     {
         $phishingLesson = Lesson::where('slug', 'phishing-scenario')->first();
-        // Scenario 1: Suspicious Email
         $scenario1 = Scenario::create([
             'lesson_id' => $phishingLesson?->id,
             'title' => 'Suspicious Email from "Bank"',
@@ -44,11 +43,11 @@ class ScenarioSeeder extends Seeder
             ],
             [
                 'scenario_id' => $scenario1->id,
-                'choice_text' => 'I do not click the link, report the email as spam, and tell my parents.',
-                'consequence' => 'Excellent! You made the safest choice: do not click, report it, and ask an adult for help.',
+                'choice_text' => 'I report the email to my parents or teacher.',
+                'consequence' => 'Excellent! You avoided the scam and helped others stay safe.',
                 'safety_score' => 100,
                 'is_recommended' => true,
-                'ai_explanation' => 'This is the best response. Never click suspicious links, always report them, and ask an adult for help.',
+                'ai_explanation' => 'Reporting suspicious emails is the best action.',
                 'sort_order' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
