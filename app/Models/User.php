@@ -87,4 +87,13 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function userBadges()
+    {
+        return $this->hasMany(UserBadge::class, 'user_id');
+    }
+    public function userProgress()
+    {
+        return $this->hasMany(\App\Models\UserProgress::class, 'user_id');
+    }
 }

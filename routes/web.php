@@ -32,7 +32,6 @@ use App\Http\Controllers\ReportedContentController;
 use App\Http\Controllers\ChildDashboardController;
 
 
-
 Route::view('/', 'welcome');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -55,6 +54,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'verified', 'role:parent'])->prefix('parent')->group(function () {
         Route::get('/dashboard', [ParentDashboardController::class, 'index'])->name('parent.dashboard');
     });
+    Route::middleware(['web','auth','role:parent'])->group(function () {
+        Route::post('/parent/add-child', [ParentDashboardController::class, 'addChild'])->name('parent.add-child');
+    });
+    Route::post('/parent/attach-child', [ParentDashboardController::class, 'attachChild'])->name('parent.attach-child');
+
 
     Route::middleware(['auth', 'verified', 'role:teacher'])->prefix('teacher')->group(function () {
         Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
@@ -262,6 +266,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/scenario',  [AdminAIContentController::class, 'showScenarioForm'])->name('scenario.form');
         Route::post('/scenario', [AdminAIContentController::class, 'generateScenario'])->name('scenario.generate');
     });
+
 });
 
 

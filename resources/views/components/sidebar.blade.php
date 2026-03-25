@@ -63,8 +63,7 @@
             <span class="text-sm font-medium">Settings</span>
         </a>
 
-        {{-- Logout --}}
-        <form method="POST" action="{{ url('/logout') }}" onsubmit="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
