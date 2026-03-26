@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\ModuleService;
+use App\Services\BadgeService;
+use App\Repositories\Interfaces\EnrollmentRepositoryInterface;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,19 +13,27 @@ use App\Models\Category;
 class ModuleController extends Controller
 {
     private ModuleService $moduleService;
+    private BadgeService $badgeService;
+    private EnrollmentRepositoryInterface $enrollmentRepo;
 
     public function __construct(
         ModuleService $moduleService,
+        BadgeService $badgeService,
+        EnrollmentRepositoryInterface $enrollmentRepo,
     )
     {
         $this->moduleService = $moduleService;
+        $this->badgeService = $badgeService;
+        $this->enrollmentRepo = $enrollmentRepo;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $modules = $this->moduleService->getPublishedModules();
-
-        return view('modules.index', compact('modules'));
+        $user = auth()->user();
+        $filter = $request->query('filter', 'all');
+        $perPage = 9;
+        $dashboardData = $this->moduleService->getDashboardData($user, $filter, $perPage, $request->query());
+        return view('modules.index', $dashboardData);
     }
 
     public function show(string $slug)
