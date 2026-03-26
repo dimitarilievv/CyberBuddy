@@ -96,4 +96,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\UserProgress::class, 'user_id');
     }
+    public function leaderboard()
+    {
+        return $this->hasOne(\App\Models\Leaderboard::class);
+    }
 }

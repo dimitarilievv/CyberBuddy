@@ -79,7 +79,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 5,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'new'],
-                'thumbnail' => '/img/modules/gaming.png',
+                'thumbnail' => '/img/modules/gaming.jpeg',
             ],
             [
                 'title' => 'Parent Guide: Online Safety',
@@ -107,6 +107,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 7,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'recommended'],
+                'thumbnail' => '/img/modules/pass.png',
             ],
             [
                 'title' => 'Privacy Settings',
@@ -120,6 +121,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 8,
                 'is_published' => true,
                 'tags' => ['beginner', 'privacy', 'interactive'],
+                'thumbnail' => '/img/modules/pass.png',
             ],
             [
                 'title' => 'Digital Footprint',
@@ -133,6 +135,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 9,
                 'is_published' => true,
                 'tags' => ['beginner', 'privacy', 'recommended'],
+                'thumbnail' => '/img/modules/pass.png',
             ],
             [
                 'title' => 'Fake News Detection',
@@ -146,6 +149,8 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 10,
                 'is_published' => true,
                 'tags' => ['intermediate', 'media', 'critical-thinking'],
+                'thumbnail' => '/img/modules/cyber.png',
+
             ],
         ];
         foreach ($modules as $moduleData) {

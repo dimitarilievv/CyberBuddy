@@ -41,6 +41,11 @@ class BadgeService
         return $awarded;
     }
 
+    public function getActiveBadges()
+    {
+        return $this->badgeRepository->getActiveBadges();
+    }
+
     private function meetsCriteria(User $user, $badge): bool
     {
         $criteria = $badge->criteria ?? [];
