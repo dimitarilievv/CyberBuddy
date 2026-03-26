@@ -114,7 +114,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
     Route::get('/modules/{slug}', [ModuleController::class, 'show'])->name('modules.show');
     Route::post('/modules/{slug}/enroll', [ModuleController::class, 'enroll'])->name('modules.enroll');
-
+    Route::get('/modules/create', [ModuleController::class, 'create'])->name('modules.create');
+    Route::post('/modules', [ModuleController::class, 'store'])->name('modules.store');
+    Route::get('/modules/{module}/edit', [ModuleController::class, 'edit'])->name('modules.edit');
+    Route::put('/modules/{module}', [ModuleController::class, 'update'])->name('modules.update');
+    Route::delete('/modules/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');
     //Questions
     Route::get('/quizzes/{quizId}/questions', [QuestionController::class, 'index'])->name('questions.index');
     Route::post('/questions/store', [QuestionController::class, 'store'])->name('questions.store');
@@ -267,6 +271,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/scenario', [AdminAIContentController::class, 'generateScenario'])->name('scenario.generate');
     });
 
+    // For Lessons
+    Route::post('/teacher/lessons/{lesson}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveLesson'])->name('teacher.lessons.approve');
+
+// For Quizzes
+    Route::post('/teacher/quizzes/{quiz}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveQuiz'])->name('teacher.quizzes.approve');
+
+// For Scenarios
+    Route::post('/teacher/scenarios/{scenario}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveScenario'])->name('teacher.scenarios.approve');
+    Route::prefix('teacher/ai')->middleware(['auth','role:teacher'])->group(function () {
+        // Forms
+        Route::get('/lesson',   [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'showLessonForm'])->name('teacher.ai.lesson.form');
+        Route::post('/lesson',  [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'generateLesson'])->name('teacher.ai.lesson.generate');
+        Route::get('/quiz',     [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'showQuizForm'])->name('teacher.ai.quiz.form');
+        Route::post('/quiz',    [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'generateQuiz'])->name('teacher.ai.quiz.generate');
+        Route::get('/scenario', [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'showScenarioForm'])->name('teacher.ai.scenario.form');
+        Route::post('/scenario',[\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'generateScenario'])->name('teacher.ai.scenario.generate');
+    });
+
+
+    // You may already have these:
+    Route::post('/teacher/modules', [TeacherDashboardController::class, 'storeModule'])->name('teacher.modules.store');
+    Route::put('/teacher/modules/{module}', [TeacherDashboardController::class, 'updateModule'])->name('teacher.modules.update');
+    Route::delete('/teacher/modules/{module}', [TeacherDashboardController::class, 'destroyModule'])->name('teacher.modules.destroy');
+    Route::put('/teacher/modules/{module}/publish', [TeacherDashboardController::class, 'publishModule'])->name('teacher.modules.publish');
+    Route::post('/modules', [TeacherDashboardController::class, 'storeModule'])->name('teacher.modules.store');
+    Route::put('/modules/{module}', [TeacherDashboardController::class, 'updateModule'])->name('teacher.modules.update');
+    Route::delete('/modules/{module}', [TeacherDashboardController::class, 'destroyModule'])->name('teacher.modules.destroy');
+
+    Route::prefix('teacher')->middleware(['auth','verified','role:teacher'])->group(function () {
+        Route::post('/modules/{module}/lessons', [TeacherDashboardController::class, 'assignLessons'])->name('teacher.modules.assignLessons');
+        // ...other teacher module routes...
+    });
 });
 
 

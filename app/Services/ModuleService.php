@@ -41,4 +41,20 @@ class ModuleService
     {
         return $this->moduleRepo->getPopular($limit);
     }
+
+    public function createModule(array $data)
+    {
+        return \App\Models\Module::create($data);
+    }
+
+    public function updateModule(\App\Models\Module $module, array $data)
+    {
+        $module->update($data);
+        return $module;
+    }
+
+    public function deleteModule(\App\Models\Module $module)
+    {
+        return $module->delete();
+    }
 }
