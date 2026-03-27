@@ -260,9 +260,9 @@
                         @endif
 
                          @php
-                             $hasQuiz = $lesson->quizzes && $lesson->quizzes->count() > 0;
-                             $firstQuiz = $hasQuiz ? $lesson->quizzes->first() : null;
-                         @endphp
+                            $hasQuiz = $lesson->quizzes && $lesson->quizzes->count() > 0;
+                            $firstQuiz = $hasQuiz ? $lesson->quizzes->first() : null;
+                        @endphp
 
                         @if($hasQuiz && $firstQuiz)
                             <a href="{{ route('quizzes.show', $firstQuiz->id) }}" class="w-full border-2 border-blue-500 text-blue-600 font-semibold py-3 rounded-lg text-center hover:bg-blue-50 transition block">
@@ -272,6 +272,12 @@
                             <button disabled class="w-full border-2 border-gray-300 text-gray-400 font-semibold py-3 rounded-lg text-center cursor-not-allowed">
                                 No Quiz Available
                             </button>
+                        @endif
+
+                        @if($lesson->type === 'scenario')
+                            <a href="{{ route('scenarios.for_lesson', $lesson->id) }}" class="w-full mt-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition block">
+                                Take the Scenario →
+                            </a>
                         @endif
 
                         <!-- Info Box -->

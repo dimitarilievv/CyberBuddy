@@ -2,33 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ScenarioService;
+use App\Models\Scenario;
 use App\Services\BadgeService;
+use App\Services\ScenarioService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\View\View;
 
 class ScenarioController extends Controller
 {
-    private ScenarioService $scenarioService;
-    private BadgeService $badgeService;
-
     public function __construct(
-        ScenarioService $scenarioService,
-        BadgeService    $badgeService,
-    )
+        private BadgeService $badgeService,
+        private ScenarioService $scenarioService
+    ) {}
+
+    // 🔴 Листа на сценарија
+    public function index(): View
     {
-        $this->badgeService = $badgeService;
-        $this->scenarioService = $scenarioService;
+        $query = Scenario::with('module', 'choices')->where('is_published', true);
+
+        if (Schema::hasColumn('scenarios', 'sort_order')) {
+            $query = $query->orderBy('sort_order');
+        } else {
+            $query = $query->orderBy('id');
+        }
+
+        $scenarios = $query->paginate(12);
+
+        return view('scenarios.index', compact('scenarios'));
     }
 
-    public function show(int $scenarioId)
+    // Листа на сценарија за лекција
+    public function lessonIndex(int $lessonId): View
     {
+        $scenarios = $this->scenarioService->getByLesson($lessonId);
+
+        return view('scenarios.lesson_index', compact('scenarios', 'lessonId'));
+    }
+
+    // 🔴 Детали на сценариј
+    public function show($scenario): View
+    {
+        $scenarioId = $scenario instanceof Scenario ? $scenario->id : (int) $scenario;
+
         $scenario = $this->scenarioService->getScenarioWithChoices($scenarioId);
 
         return view('scenarios.show', compact('scenario'));
     }
 
-    public function submit(Request $request, int $scenarioId)
+    // 🔴 Submit (ако го користиш)
+    public function submit(Request $request, $scenario)
     {
+        $scenarioId = $scenario instanceof Scenario ? $scenario->id : (int) $scenario;
+
         $request->validate(['choice_id' => 'required|integer|exists:scenario_choices,id']);
 
         $attempt = $this->scenarioService->submitChoice(
@@ -39,6 +65,6 @@ class ScenarioController extends Controller
 
         $newBadges = $this->badgeService->checkAndAward(auth()->user());
 
-        return view('scenarios.result', compact('attempt', 'newBadges'));
+        return redirect()->route('scenario.result', $attempt->id);
     }
 }

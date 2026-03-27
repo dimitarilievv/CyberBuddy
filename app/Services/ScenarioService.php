@@ -17,6 +17,16 @@ class ScenarioService
         return $this->scenarioRepo->getWithChoices($scenarioId);
     }
 
+    public function getPublishedScenarios()
+    {
+        return $this->scenarioRepo->getPublished();
+    }
+
+    public function getByLesson(int $lessonId)
+    {
+        return $this->scenarioRepo->getByLesson($lessonId);
+    }
+
     public function submitChoice(int $scenarioId, int $userId, int $choiceId): ScenarioAttempt
     {
         $scenario = $this->scenarioRepo->getWithChoices($scenarioId);

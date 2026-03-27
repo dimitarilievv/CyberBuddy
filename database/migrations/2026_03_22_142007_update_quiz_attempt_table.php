@@ -23,30 +23,12 @@ return new class extends Migration
             // Add any other columns or indexes as needed
         });
 
-        // Create quiz_attempt_answers table if it does not exist
-        if (!Schema::hasTable('quiz_attempt_answers')) {
-            Schema::create('quiz_attempt_answers', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('quiz_attempt_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
-                $table->foreignId('question_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
-                $table->foreignId('selected_option_id')
-                    ->nullable()
-                    ->constrained('question_options')
-                    ->nullOnDelete();
-                $table->boolean('is_correct')->default(false);
-                $table->timestamps();
-            });
-        }
+        // NOTE: quiz_attempt_answers table creation was moved to a dedicated migration
+        // 2026_03_27_120119_create_quiz_attempt_answers_table.php to avoid duplicate creation.
     }
 
     public function down(): void
     {
-        // Drop quiz_attempt_answers table if exists
-        Schema::dropIfExists('quiz_attempt_answers');
         // Optionally, drop added columns from quiz_attempts
         Schema::table('quiz_attempts', function (Blueprint $table) {
             if (Schema::hasColumn('quiz_attempts', 'ai_feedback')) {

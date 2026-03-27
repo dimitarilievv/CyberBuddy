@@ -31,6 +31,10 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AiInteractionController;
 use App\Http\Controllers\ReportedContentController;
 use App\Http\Controllers\ChildDashboardController;
+use App\Livewire\Scenario\Attempt;
+use App\Livewire\Scenario\Result ;
+use App\Livewire\Scenario\History ;
+use App\Livewire\Notification\Index as NotificationIndex;
 
 
 Route::view('/', 'welcome');
@@ -88,6 +92,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::post('/modules/{module}/lessons/{lesson}/complete', [LessonController::class, 'complete'])
             ->name('lessons.complete');
+
+        // Scenarios for a lesson
+        Route::get('/lessons/{lesson}/scenarios', [ScenarioController::class, 'lessonIndex'])
+            ->name('scenarios.for_lesson');
     });
 
     //Media file
@@ -145,10 +153,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/quizzes/{quizId}/attempts/my', [QuizAttemptController::class, 'myAttempts'])->name('quiz_attempts.my_attempts');
     });
 
-    // Scenarios
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth', 'verified'])->group(function () {
+        // Scenarios
+        Route::get('/scenarios', [ScenarioController::class, 'index'])->name('scenarios.index');
+
+        // scenario detail & submit
         Route::get('/scenarios/{scenario}', [ScenarioController::class, 'show'])->name('scenarios.show');
         Route::post('/scenarios/{scenario}/submit', [ScenarioController::class, 'submit'])->name('scenarios.submit');
+
+        // Livewire page components
+        Route::get('/scenarios/{scenario}/attempt', Attempt::class)->name('scenario.attempt');
+        Route::get('/scenario-attempts/{attempt}/result', Result::class)->name('scenario.result');
+        Route::get('/scenario-history', History::class)->name('scenario.history');
     });
 
     //Scenario attempts
@@ -196,6 +212,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index'])
             ->name('notifications.index');
+
 
         Route::get('/notifications/unread', [NotificationController::class, 'unread'])
             ->name('notifications.unread');
