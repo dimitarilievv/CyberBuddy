@@ -303,6 +303,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/modules/{module}/lessons', [TeacherDashboardController::class, 'assignLessons'])->name('teacher.modules.assignLessons');
         // ...other teacher module routes...
     });
+
+    Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/users', [AdminDashboardController::class, 'users'])->name('admin.users');
+        Route::get('/users/export', [AdminDashboardController::class, 'exportUsers'])->name('admin.users.export');
+        Route::get('/modules', [AdminDashboardController::class, 'modules'])->name('admin.modules.index');
+        Route::post('/modules', [AdminDashboardController::class, 'storeModule'])->name('admin.modules.store');
+        Route::put('/modules/{module}', [AdminDashboardController::class, 'updateModule'])->name('admin.modules.update');
+        Route::put('/modules/{module}/publish', [AdminDashboardController::class, 'publishModule'])->name('admin.modules.publish');
+        Route::delete('/modules/{module}', [AdminDashboardController::class, 'destroyModule'])->name('admin.modules.destroy');
+        Route::patch('/reports/{reportedContent}/resolve', [\App\Http\Controllers\Admin\AdminDashboardController::class, 'resolveReport'])->name('admin.reports.resolve');
+
+    });
 });
 
 
