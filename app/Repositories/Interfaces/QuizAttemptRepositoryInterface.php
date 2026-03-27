@@ -22,4 +22,5 @@ interface QuizAttemptRepositoryInterface extends BaseRepositoryInterface
     public function getAverageScoreForQuiz(int $quizId): float;
     public function submitAttempt(int $attemptId, array $data): QuizAttempt;
     public function saveAiFeedback(int $attemptId, string $feedback): QuizAttempt;
+    public function findOrFail(int $id): QuizAttempt;
 }

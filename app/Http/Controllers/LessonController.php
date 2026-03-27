@@ -6,13 +6,17 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\UserProgress;
 use App\Models\Enrollment;
-use OpenApi\Attributes as OA;
 
 class LessonController extends Controller
 {
     public function show(Module $module, Lesson $lesson)
     {
-        $lesson->load(['resources', 'scenarios.choices', 'quizzes']);
+        // Проверка дали лекцијата припаѓа на модулот
+        if ($lesson->module_id !== $module->id) {
+            abort(404);
+        }
+
+        $lesson->load(['resources', 'scenarios.choices', 'quizzes', 'mediaFiles']);
 
         $progress = null;
         if (auth()->check()) {
@@ -49,6 +53,15 @@ class LessonController extends Controller
 
     public function complete(Module $module, Lesson $lesson)
     {
+        // Проверка дали лекцијата припаѓа на модулот
+        if ($lesson->module_id !== $module->id) {
+            abort(404);
+        }
+
+        if (!auth()->check()) {
+            abort(401);
+        }
+
         $enrollment = Enrollment::where('user_id', auth()->id())
             ->where('module_id', $module->id)
             ->first();
@@ -77,7 +90,7 @@ class LessonController extends Controller
             ]);
         }
 
-        return redirect()->route('lessons.show', [$module, $lesson])
-            ->with('success', 'Lesson is ended!');
+        return redirect()->route('lessons.show', [$module->id, $lesson->id])
+            ->with('success', 'Lesson marked as completed!');
     }
 }

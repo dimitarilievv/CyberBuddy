@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\QuizAttemptAnswer;
 
 class QuizAttempt extends Model
 {
@@ -44,6 +45,12 @@ class QuizAttempt extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(QuizAttemptAnswer::class);
+    }
+
+    // Alias expected by views/controllers: questionAnswers
+    public function questionAnswers(): HasMany
+    {
+        return $this->answers();
     }
     public function getIsPastedAttribute(): bool
     {

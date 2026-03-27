@@ -39,6 +39,8 @@ use App\Repositories\Interfaces\ActivityLogRepositoryInterface;
 use App\Repositories\ActivityLogRepository;
 use App\Repositories\Interfaces\ReportedContentRepositoryInterface;
 use App\Repositories\ReportedContentRepository;
+use App\Repositories\QuizAttemptRepository;
+use App\Repositories\Interfaces\QuizAttemptRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(ModuleRepositoryInterface::class, ModuleRepository::class);
         $this->app->bind(QuizRepositoryInterface::class, QuizRepository::class);
+        $this->app->bind(QuizAttemptRepositoryInterface::class, QuizAttemptRepository::class);
         $this->app->bind(ScenarioRepositoryInterface::class, ScenarioRepository::class);
         $this->app->bind(EnrollmentRepositoryInterface::class, EnrollmentRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);

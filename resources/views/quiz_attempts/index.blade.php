@@ -22,12 +22,18 @@
                 </thead>
                 <tbody>
                 @foreach($attempts as $attempt)
+                    @php
+                        $timeSpent = isset($attempt->time_spent_seconds) && $attempt->time_spent_seconds !== null
+                            ? gmdate('H:i:s', (int) $attempt->time_spent_seconds)
+                            : '-';
+                        $startedAt = $attempt->started_at ? $attempt->started_at->format('Y-m-d H:i') : '-';
+                    @endphp
                     <tr class="border-t">
                         <td class="p-3">{{ $attempt->quiz->title }}</td>
                         <td class="p-3">{{ $attempt->score }}%</td>
                         <td class="p-3 capitalize">{{ $attempt->status }}</td>
-                        <td class="p-3">{{ gmdate('H:i:s', $attempt->time_spent_seconds) }}</td>
-                        <td class="p-3">{{ $attempt->started_at->format('Y-m-d H:i') }}</td>
+                        <td class="p-3">{{ $timeSpent }}</td>
+                        <td class="p-3">{{ $startedAt }}</td>
                         <td class="p-3">
                             <a href="{{ route('quiz_attempts.show', $attempt->id) }}" class="text-blue-500 hover:underline">View</a>
                         </td>

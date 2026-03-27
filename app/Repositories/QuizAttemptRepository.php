@@ -14,26 +14,30 @@ class QuizAttemptRepository extends BaseRepository implements QuizAttemptReposit
         parent::__construct($model);
     }
 
-    public function getByQuiz(int $quizId, array $filters = []): Collection
+    // 🔴 ДОДАЈ ОВА - Од interface
+    public function findOrFail(int $id): QuizAttempt
     {
-        return $this->model
-            ->where('quiz_id', $quizId)
-            ->when(isset($filters['status']), fn($q) => $q->where('status', $filters['status']))
-            ->when(isset($filters['user_id']), fn($q) => $q->where('user_id', $filters['user_id']))
-            ->with(['user:id,name,avatar'])
-            ->orderByDesc('score')
-            ->get();
+        return $this->model->findOrFail($id);
+    }
+
+    public function find(int $id): ?QuizAttempt
+    {
+        return $this->model->find($id);
     }
 
     public function getByUser(int $userId, array $filters = []): LengthAwarePaginator
     {
-        return $this->model
-            ->where('user_id', $userId)
-            ->when(isset($filters['status']), fn($q) => $q->where('status', $filters['status']))
-            ->when(isset($filters['quiz_id']), fn($q) => $q->where('quiz_id', $filters['quiz_id']))
-            ->with(['quiz:id,title,passing_score'])
-            ->orderByDesc('created_at')
-            ->paginate($filters['per_page'] ?? 15);
+        $query = $this->model->where('user_id', $userId);
+
+        if (isset($filters['quiz_id'])) {
+            $query->where('quiz_id', $filters['quiz_id']);
+        }
+
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(15);
     }
 
     public function getUserAttemptsForQuiz(int $userId, int $quizId): Collection
@@ -41,8 +45,63 @@ class QuizAttemptRepository extends BaseRepository implements QuizAttemptReposit
         return $this->model
             ->where('user_id', $userId)
             ->where('quiz_id', $quizId)
-            ->with(['answers.question'])
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getTopAttempts(int $quizId, int $limit = 10): Collection
+    {
+        return $this->model
+            ->where('quiz_id', $quizId)
+            ->orderBy('score', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function create(array $data): QuizAttempt
+    {
+        return $this->model->create($data);
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        $attempt = $this->find($id);
+        if (! $attempt) {
+            return false;
+        }
+
+        return (bool) $attempt->update($data);
+    }
+
+    public function delete(int $id): bool
+    {
+        return $this->findOrFail($id)->delete();
+    }
+
+    // 🔴 ПОСТОЕЧКИ МЕТОДИ
+    public function getByQuiz(int $quizId, array $filters = []): Collection
+    {
+        return $this->model
+            ->where('quiz_id', $quizId)
+            ->when(isset($filters['status']), fn($q) => $q->where('status', $filters['status']))
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getByQuizWithPagination(int $quizId, int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->model
+            ->where('quiz_id', $quizId)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+    }
+
+    public function getLeaderboard(int $quizId, int $limit = 10): Collection
+    {
+        return $this->model
+            ->where('quiz_id', $quizId)
+            ->orderBy('score', 'desc')
+            ->limit($limit)
             ->get();
     }
 
@@ -90,6 +149,7 @@ class QuizAttemptRepository extends BaseRepository implements QuizAttemptReposit
             ->where('user_id', $userId)
             ->where('quiz_id', $quizId)
             ->where('status', 'in_progress')
+            ->orderByDesc('created_at')
             ->first();
     }
 
@@ -98,31 +158,17 @@ class QuizAttemptRepository extends BaseRepository implements QuizAttemptReposit
         return $this->model
             ->where('quiz_id', $quizId)
             ->where('status', 'passed')
-            ->with(['user:id,name,avatar'])
             ->orderByDesc('score')
-            ->get();
-    }
-
-    public function getTopAttempts(int $quizId, int $limit = 10): Collection
-    {
-        return $this->model
-            ->where('quiz_id', $quizId)
-            ->where('status', 'passed')
-            ->with(['user:id,name,avatar'])
-            ->orderByDesc('score')
-            ->orderBy('time_spent_seconds')
-            ->limit($limit)
             ->get();
     }
 
     public function getAttemptsByDateRange(string $from, string $to, ?int $userId = null): Collection
     {
-        return $this->model
-            ->when($userId, fn($q) => $q->where('user_id', $userId))
-            ->whereBetween('created_at', [$from, $to])
-            ->with(['quiz:id,title', 'user:id,name'])
-            ->orderByDesc('created_at')
-            ->get();
+        $q = $this->model->whereBetween('created_at', [$from, $to]);
+        if ($userId) {
+            $q->where('user_id', $userId);
+        }
+        return $q->get();
     }
 
     public function getAverageScoreForQuiz(int $quizId): float
@@ -130,22 +176,20 @@ class QuizAttemptRepository extends BaseRepository implements QuizAttemptReposit
         return (float) $this->model
             ->where('quiz_id', $quizId)
             ->whereNotNull('score')
-            ->avg('score') ?? 0.0;
+            ->avg('score');
     }
 
     public function submitAttempt(int $attemptId, array $data): QuizAttempt
     {
-        $attempt = $this->model->findOrFail($attemptId);
+        $attempt = $this->findOrFail($attemptId);
         $attempt->update($data);
-
-        return $attempt->fresh(['quiz', 'answers']);
+        return $attempt;
     }
 
     public function saveAiFeedback(int $attemptId, string $feedback): QuizAttempt
     {
-        $attempt = $this->model->findOrFail($attemptId);
+        $attempt = $this->findOrFail($attemptId);
         $attempt->update(['ai_feedback' => $feedback]);
-
         return $attempt;
     }
 }

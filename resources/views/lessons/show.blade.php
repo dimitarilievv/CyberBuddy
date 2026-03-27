@@ -1,13 +1,28 @@
 @extends('layouts.app')
 
+@php
+    use App\Models\UserProgress;
+@endphp
+
 @section('content')
+    @php
+        // Ensure $module exists: prefer the controller-provided $module, otherwise derive from the lesson relation.
+        $module = $module ?? ($lesson->module ?? null);
+    @endphp
     <div class="min-h-screen bg-gray-50">
         <!-- Breadcrumb -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
             <div class="flex items-center gap-2 text-sm text-gray-600 mb-8">
+                <a href="{{ route('dashboard') }}" class="hover:text-gray-900">Dashboard</a>
+                <span>›</span>
                 <a href="{{ route('modules.index') }}" class="hover:text-gray-900">Modules</a>
                 <span>›</span>
-                <a href="#" class="hover:text-gray-900">{{ $lesson->module->name ?? 'Module' }}</a>
+                {{-- If $module is available link to it, otherwise fallback to modules index --}}
+                @if($module)
+                    <a href="{{ route('modules.show', $module->id) }}" class="hover:text-gray-900">{{ $module->name ?? 'Module' }}</a>
+                @else
+                    <a href="{{ route('modules.index') }}" class="hover:text-gray-900">Module</a>
+                @endif
                 <span>›</span>
                 <span class="text-gray-900 font-medium">{{ $lesson->title }}</span>
             </div>
@@ -20,26 +35,26 @@
                     <!-- Title -->
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ $lesson->title }}</h1>
                     <div class="flex items-center gap-4 mb-8 text-sm text-gray-600">
-                    <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {{ $lesson->duration ?? '15' }} mins
-                    </span>
                         <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Reading + Video
-                    </span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{ $lesson->estimated_minutes ?? '15' }} mins
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Reading + Video
+                        </span>
                     </div>
 
                     <!-- Video Section -->
                     <div class="relative w-full bg-gray-900 rounded-2xl overflow-hidden mb-12 aspect-video">
-                        @if($lesson->video_url)
+                        @if($lesson->mediaFiles && $lesson->mediaFiles->where('type', 'video')->first())
                             <iframe
                                 class="w-full h-full"
-                                src="{{ $lesson->video_url }}"
+                                src="{{ $lesson->mediaFiles->where('type', 'video')->first()->url }}"
                                 title="{{ $lesson->title }}"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -110,7 +125,7 @@
                                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                                             </svg>
                                         </div>
-                                        <h4 class="text-lg font-bold text-gray-900">The "Dont's"</h4>
+                                        <h4 class="text-lg font-bold text-gray-900">The "Don'ts"</h4>
                                     </div>
                                     <ul class="space-y-2 text-gray-700">
                                         <li class="flex items-start gap-2">
@@ -167,35 +182,27 @@
                         <h3 class="text-2xl font-bold text-gray-900 mb-6">Extra Resources</h3>
                         <p class="text-gray-600 mb-6">Deepen your knowledge with these fun activities</p>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <a href="#" class="bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition">
-                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Password Safety Guide</h4>
-                                <p class="text-sm text-gray-600">PDF Document</p>
-                            </a>
-
-                            <a href="#" class="bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition">
-                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Hack the Pass Game</h4>
-                                <p class="text-sm text-gray-600">Interactive</p>
-                            </a>
-
-                            <a href="#" class="bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition">
-                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                    </svg>
-                                </div>
-                                <h4 class="font-semibold text-gray-900 mb-1">Parent Guide: Safety</h4>
-                                <p class="text-sm text-gray-600">External Link</p>
-                            </a>
+                            @forelse($lesson->resources as $resource)
+                                <a href="{{ $resource->url ?? '#' }}" target="_blank" class="bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">{{ $resource->title }}</h4>
+                                    <p class="text-sm text-gray-600">{{ $resource->type ?? 'Resource' }}</p>
+                                </a>
+                            @empty
+                                <a href="#" class="bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-900 mb-1">Password Safety Guide</h4>
+                                    <p class="text-sm text-gray-600">PDF Document</p>
+                                </a>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -206,21 +213,66 @@
                     <div class="bg-white rounded-lg shadow-sm p-6 mb-6 sticky top-20">
                         <div class="mb-6">
                             <h4 class="text-sm font-semibold text-gray-600 uppercase mb-2">Your Progress</h4>
-                            <p class="text-3xl font-bold text-blue-600 mb-1">3 / 8 Lessons</p>
-                            <p class="text-xs text-gray-500">Starting your journey</p>
-                        </div>
+                            @php
+                                // Compute totals only when module is available to avoid calling methods on null
+                                if ($module) {
+                                    $totalLessons = $module->lessons()->where('is_published', true)->count();
+                                    $completedLessons = 0;
+                                    if (auth()->check()) {
+                                        $completedLessons = UserProgress::whereHas('enrollment', function($q) use ($module) {
+                                            $q->where('user_id', auth()->id())
+                                              ->where('module_id', $module->id);
+                                        })
+                                        ->where('status', 'completed')
+                                        ->count();
+                                    }
+                                } else {
+                                    $totalLessons = 0;
+                                    $completedLessons = 0;
+                                }
+                            @endphp
+                             <p class="text-3xl font-bold text-blue-600 mb-1">{{ $completedLessons }} / {{ $totalLessons }} Lessons</p>
+                             <p class="text-xs text-gray-500">Starting your journey</p>
+                         </div>
 
                         <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
-                            <div class="bg-blue-500 h-2 rounded-full" style="width: 37.5%"></div>
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0 }}%"></div>
                         </div>
 
-                        <a href="#" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg text-center transition block mb-3">
-                            Mark as Completed
-                        </a>
+                        {{-- Complete button: only enable action when module is known --}}
+                        @if($module)
+                            <form action="{{ route('lessons.complete', [$module->id, $lesson->id]) }}" method="POST" class="mb-3">
+                                @csrf
+                                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg text-center transition block">
+                                    @if(isset($progress) && $progress && (is_object($progress) ? ($progress->status ?? null) === 'completed' : (is_array($progress) && ($progress['status'] ?? null) === 'completed')))
+                                        ✓ Marked as Completed
+                                    @else
+                                        Mark as Completed
+                                    @endif
+                                </button>
+                            </form>
+                        @else
+                            <div class="mb-3">
+                                <button disabled class="w-full bg-gray-200 text-gray-400 font-semibold py-3 rounded-lg text-center cursor-not-allowed">
+                                    Mark as Completed
+                                </button>
+                            </div>
+                        @endif
 
-                        <a href="#" class="w-full border-2 border-blue-500 text-blue-600 font-semibold py-3 rounded-lg text-center hover:bg-blue-50 transition block">
-                            Take the Quiz →
-                        </a>
+                         @php
+                             $hasQuiz = $lesson->quizzes && $lesson->quizzes->count() > 0;
+                             $firstQuiz = $hasQuiz ? $lesson->quizzes->first() : null;
+                         @endphp
+
+                        @if($hasQuiz && $firstQuiz)
+                            <a href="{{ route('quizzes.show', $firstQuiz->id) }}" class="w-full border-2 border-blue-500 text-blue-600 font-semibold py-3 rounded-lg text-center hover:bg-blue-50 transition block">
+                                Take the Quiz →
+                            </a>
+                        @else
+                            <button disabled class="w-full border-2 border-gray-300 text-gray-400 font-semibold py-3 rounded-lg text-center cursor-not-allowed">
+                                No Quiz Available
+                            </button>
+                        @endif
 
                         <!-- Info Box -->
                         <div class="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
@@ -235,21 +287,43 @@
                         <h4 class="text-sm font-semibold text-gray-600 uppercase mb-4">Navigation</h4>
 
                         <div class="flex items-center justify-between mb-4">
-                            <a href="#" class="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                </svg>
-                                Back to Modules
-                            </a>
-                        </div>
+                            @if($module)
+                                <a href="{{ route('modules.show', $module->id) }}" class="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-1">
+                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                     </svg>
+                                     Back to Modules
+                                </a>
+                            @else
+                                <a href="{{ route('modules.index') }}" class="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-1">
+                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                     </svg>
+                                     Back to Modules
+                                </a>
+                            @endif
+                         </div>
 
                         <div class="space-y-3">
-                            <div class="text-sm">
-                                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium">← Previous Lesson</a>
-                            </div>
-                            <div class="text-sm">
-                                <a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Next Lesson →</a>
-                            </div>
+                            @if($prevLesson)
+                                <div class="text-sm">
+                                    @if($module)
+                                        <a href="{{ route('lessons.show', [$module->id, $prevLesson->id]) }}" class="text-gray-600 hover:text-gray-900 font-medium">← {{ $prevLesson->title }}</a>
+                                    @else
+                                        <span class="text-gray-600 font-medium">← {{ $prevLesson->title }}</span>
+                                    @endif
+                                </div>
+                            @endif
+
+                            @if($nextLesson)
+                                <div class="text-sm">
+                                    @if($module)
+                                        <a href="{{ route('lessons.show', [$module->id, $nextLesson->id]) }}" class="text-gray-600 hover:text-gray-900 font-medium">{{ $nextLesson->title }} →</a>
+                                    @else
+                                        <span class="text-gray-600 font-medium">{{ $nextLesson->title }} →</span>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
