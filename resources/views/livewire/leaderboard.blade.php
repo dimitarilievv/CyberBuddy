@@ -74,8 +74,13 @@ new class extends Component {
                     <div class="text-base mb-1 relative z-10">🥈</div>
 
                     <div
-                        class="w-12 h-12 mx-auto rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-600 mb-2 relative z-10">
-                        {{ strtoupper(substr($second->user->name ?? 'U', 0, 2)) }}
+                        class="w-12 h-12 mx-auto rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-600 mb-2 relative z-10 overflow-hidden">
+                        @php $secondAvatar = optional($second->user->profile)->avatar ?? null; @endphp
+                        @if($secondAvatar)
+                            <img src="{{ str_starts_with($secondAvatar, 'http') ? $secondAvatar : Storage::url($secondAvatar) }}" alt="{{ $second->user->name ?? 'User' }}" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr($second->user->name ?? 'U', 0, 2)) }}
+                        @endif
                     </div>
 
                     <p class="text-xs font-semibold text-gray-800 truncate relative z-10">
@@ -95,8 +100,13 @@ new class extends Component {
                     <div class="text-lg mb-1 relative z-10">👑</div>
 
                     <div
-                        class="w-14 h-14 mx-auto rounded-full bg-white/20 flex items-center justify-center text-base font-bold mb-2 relative z-10">
-                        {{ strtoupper(substr($first->user->name ?? 'U', 0, 2)) }}
+                        class="w-14 h-14 mx-auto rounded-full bg-white/20 flex items-center justify-center text-base font-bold mb-2 relative z-10 overflow-hidden">
+                        @php $firstAvatar = optional($first->user->profile)->avatar ?? null; @endphp
+                        @if($firstAvatar)
+                            <img src="{{ str_starts_with($firstAvatar, 'http') ? $firstAvatar : Storage::url($firstAvatar) }}" alt="{{ $first->user->name ?? 'User' }}" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr($first->user->name ?? 'U', 0, 2)) }}
+                        @endif
                     </div>
 
                     <p class="text-xs font-bold truncate relative z-10">
@@ -116,8 +126,13 @@ new class extends Component {
                     <div class="text-base mb-1 relative z-10">🥉</div>
 
                     <div
-                        class="w-12 h-12 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-sm font-bold text-orange-500 mb-2 relative z-10">
-                        {{ strtoupper(substr($third->user->name ?? 'U', 0, 2)) }}
+                        class="w-12 h-12 mx-auto rounded-full bg-orange-100 flex items-center justify-center text-sm font-bold text-orange-500 mb-2 relative z-10 overflow-hidden">
+                        @php $thirdAvatar = optional($third->user->profile)->avatar ?? null; @endphp
+                        @if($thirdAvatar)
+                            <img src="{{ str_starts_with($thirdAvatar, 'http') ? $thirdAvatar : Storage::url($thirdAvatar) }}" alt="{{ $third->user->name ?? 'User' }}" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr($third->user->name ?? 'U', 0, 2)) }}
+                        @endif
                     </div>
 
                     <p class="text-xs font-semibold text-gray-800 truncate relative z-10">
@@ -209,8 +224,13 @@ new class extends Component {
                         <td class="px-4 py-4">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="w-9 h-9 rounded-full {{ $isMe ? 'bg-blue-200 text-blue-800' : 'bg-gray-100 text-gray-600' }} flex items-center justify-center text-sm font-semibold shrink-0">
-                                    {{ strtoupper(substr($entry->user->name ?? 'U', 0, 2)) }}
+                                    class="w-9 h-9 rounded-full {{ $isMe ? 'bg-blue-200 text-blue-800' : 'bg-gray-100 text-gray-600' }} flex items-center justify-center text-sm font-semibold shrink-0 overflow-hidden">
+                                    @php $rowAvatar = optional($entry->user->profile)->avatar ?? null; @endphp
+                                    @if($rowAvatar)
+                                        <img src="{{ str_starts_with($rowAvatar, 'http') ? $rowAvatar : Storage::url($rowAvatar) }}" alt="{{ $entry->user->name ?? 'User' }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ strtoupper(substr($entry->user->name ?? 'U', 0, 2)) }}
+                                    @endif
                                 </div>
                                 <div>
                                     <p class="text-sm font-semibold {{ $isMe ? 'text-blue-700' : 'text-gray-800' }}">
