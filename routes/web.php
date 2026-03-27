@@ -5,6 +5,7 @@ use App\Http\Controllers\AIContentController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\MediaFileController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionAnswerController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizAttemptController;
@@ -303,6 +304,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/modules/{module}/lessons', [TeacherDashboardController::class, 'assignLessons'])->name('teacher.modules.assignLessons');
         // ...other teacher module routes...
     });
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/settings', [ProfileController::class, 'edit'])->name('settings.edit');
+        Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
+    });
+
+
 
     Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');

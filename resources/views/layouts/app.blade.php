@@ -45,12 +45,6 @@
                 {{-- Right side --}}
                 @auth
                     <div class="flex items-center gap-6">
-                        {{-- Search Button --}}
-                        <button class="text-gray-400 hover:text-gray-600 transition-colors p-1">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
-                            </svg>
-                        </button>
 
                         {{-- Notifications Button --}}
                         <button class="relative text-gray-400 hover:text-gray-600 transition-colors p-1">
@@ -67,8 +61,13 @@
                                 <p class="text-xs text-gray-500 leading-none mt-0.5 capitalize">{{ auth()->user()->role ?? 'child' }}</p>
                             </div>
                             <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-300 flex-shrink-0">
-                                @if(auth()->user()->profile_photo_url ?? false)
-                                    <img src="{{ auth()->user()->profile_photo_url }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                @php
+                                    $profile = optional(auth()->user())->profile;
+                                    $avatar = $profile->avatar ?? null;
+                                @endphp
+
+                                @if($avatar)
+                                    <img src="{{ str_starts_with($avatar, 'http') ? $avatar : Storage::url($avatar) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                                         <span class="text-white text-xs font-bold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
