@@ -14,9 +14,8 @@ class LeaderboardController extends Controller
     public function index(Request $request)
     {
         $period = $request->get('period', 'all_time');
-        $top = $this->service->getTop(10, $period);
 
-        return view('leaderboard.index', compact('top', 'period'));
+        return view('leaderboard.index', compact('period'));
     }
 
     // Show current user's stats
