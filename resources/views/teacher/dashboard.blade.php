@@ -97,22 +97,22 @@
                     </span>
                         </td>
                         <td class="py-2 flex gap-2 flex-wrap">
-                            <button
-                                class="text-blue-600 font-semibold text-xs"
-                                @click="
-                            activeModule = {{ $module->id }};
-                            showEdit = true;
-                            editData = {
-                                title: '{{ addslashes($module->title) }}',
-                                description: `{{ addslashes($module->description ?? '') }}`,
-                                category_id: '{{ $module->category_id ?? '' }}',
-                                difficulty: '{{ addslashes($module->difficulty ?? '') }}',
-                                age_group: '{{ addslashes($module->age_group ?? '') }}',
-                                estimated_duration: '{{ addslashes($module->estimated_duration ?? '') }}',
-                                audience: '{{ $module->audience ?? '' }}'
-                            };
-                        "
-                            >Edit</button>
+                                <button
+                                    class="text-blue-600 font-semibold text-xs"
+                                    @click="
+                                activeModule = {{ $module->id }};
+                                showEdit = true;
+                                editData = {
+                                    title: '{{ addslashes($module->title) }}',
+                                    description: `{{ addslashes($module->description ?? '') }}`,
+                                    category_id: '{{ $module->category_id ?? '' }}',
+                                    difficulty: '{{ addslashes($module->difficulty ?? '') }}',
+                                    age_group: '{{ addslashes($module->age_group ?? '') }}',
+                                    estimated_duration: '{{ addslashes($module->estimated_duration ?? '') }}',
+                                    audience: '{{ $module->audience ?? '' }}'
+                                };
+                            "
+                                >Edit</button>
                             <form
                                 action="{{ route('teacher.modules.destroy', $module) }}"
                                 method="POST"
