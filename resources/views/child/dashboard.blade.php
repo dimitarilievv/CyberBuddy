@@ -89,30 +89,86 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Recent Badges -->
             <div class="bg-white rounded-xl shadow p-5">
-                <div class="flex justify-between items-center mb-2">
+                <div class="flex justify-between items-center mb-4">
                     <span class="font-bold text-gray-700">Recent Badges</span>
-                    <a href="{{ route('badges.index') }}" class="text-blue-500 text-xs font-semibold hover:underline">Gallery &raquo;</a>
+                    <a href="{{ route('badges.index') }}" class="text-blue-500 text-xs font-semibold hover:underline">
+                        Gallery &raquo;
+                    </a>
                 </div>
+
                 <div class="grid grid-cols-2 gap-3">
-                    @forelse ($recentBadges as $badge)
-                        <div class="bg-blue-50 rounded-2xl text-center py-5 px-1 shadow group hover:bg-blue-100 transition-all cursor-pointer">
-                            <div class="text-4xl mb-2">
-                                {!! $badge->badge->icon_html ?? '🏅' !!}
+                    @forelse ($recentBadges as $userBadge)
+                        @php
+                            $badge = $userBadge->badge;
+                            $color = $badge->color ?? '#6B7280';
+                            $earnedDate = $userBadge->earned_at
+                                ? \Carbon\Carbon::parse($userBadge->earned_at)->format('M d, Y')
+                                : null;
+                        @endphp
+
+                        <div class="rounded-2xl p-4 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer group"
+                             style="background-color: {{ $color }}15;">
+
+                            {{-- Icon --}}
+                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
+                                 style="background-color: {{ $color }}25;">
+                                @include('badges._icon', ['icon' => $badge->icon, 'color' => $color, 'size' => 28])
                             </div>
-                            <div class="font-bold text-base text-gray-800 mb-1 group-hover:text-blue-700 transition">
-                                {{ $badge->badge->name ?? '' }}
-                            </div>
-                            @if(!empty($badge->badge->title))
-                                <div class="text-xs text-blue-500 font-semibold mb-1">{{ $badge->badge->title }}</div>
+
+                            {{-- Name --}}
+                            <p class="font-bold text-sm text-gray-800 leading-tight mb-1 group-hover:text-blue-600 transition-colors">
+                                {{ $badge->name }}
+                            </p>
+
+                            {{-- Type pill --}}
+                            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full mb-2"
+                                  style="color: {{ $color }}; background-color: {{ $color }}20;">
+                    {{ ucfirst($badge->type) }}
+                </span>
+
+                            {{-- Date --}}
+                            @if($earnedDate)
+                                <p class="text-[11px] text-gray-400 flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2.2"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    {{ $earnedDate }}
+                                </p>
                             @endif
-                            <div class="text-[11px] text-gray-400 mt-2">
-                                {{ $badge->awarded_at ? $badge->awarded_at->format('M d, Y') : '' }}
-                            </div>
                         </div>
+
                     @empty
-                        <div class="col-span-2 text-gray-400 text-center py-5">No badges yet.</div>
+                        <div class="col-span-2 py-8 flex flex-col items-center gap-2 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="1.5"
+                                 stroke-linecap="round" stroke-linejoin="round" class="text-gray-300">
+                                <circle cx="12" cy="8" r="6"/>
+                                <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                            </svg>
+                            <p class="text-sm font-medium">No badges yet.</p>
+                            <a href="{{ route('modules.index') }}" class="text-xs text-blue-500 font-semibold hover:underline">
+                                Start earning →
+                            </a>
+                        </div>
                     @endforelse
                 </div>
+
+                {{-- Footer: show total count if more than displayed --}}
+                @if($recentBadges->count() > 0)
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                        <p class="text-xs text-gray-400">
+                            Showing {{ $recentBadges->count() }} recent
+                            {{ Str::plural('badge', $recentBadges->count()) }}
+                        </p>
+                        <a href="{{ route('badges.index') }}"
+                           class="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                            View all →
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <!-- All Lesson Progress -->
