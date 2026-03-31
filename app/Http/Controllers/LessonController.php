@@ -90,7 +90,20 @@ class LessonController extends Controller
             ]);
         }
 
-        return redirect()->route('lessons.show', [$module->id, $lesson->id])
-            ->with('success', 'Lesson marked as completed!');
+        // Find the next lesson
+        $nextLesson = \App\Models\Lesson::where('module_id', $module->id)
+            ->where('sort_order', '>', $lesson->sort_order)
+            ->where('is_published', true)
+            ->orderBy('sort_order')
+            ->first();
+
+        if ($nextLesson) {
+            return redirect()->route('lessons.show', [$module->id, $nextLesson->id])
+                ->with('success', 'Lesson marked as completed! Moving to next lesson.');
+        }
+
+// If no next lesson, go to module overview or congrat message
+        return redirect()->route('modules.index')
+            ->with('success', 'Congratulations! You have completed this module.');
     }
 }

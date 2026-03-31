@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{ $module->title ?? 'Module Details' }}</h1>
     @if($isEnrolled)
-        <p>You are enrolled in this module ✅</p>
-    @else
-        <p>You are not enrolled yet.</p>
+        @php
+            $firstLesson = $module->lessons()->where('is_published', true)->orderBy('sort_order')->first();
+        @endphp
+        @if($firstLesson)
+            <a href="{{ route('lessons.show', [$module->id, $firstLesson->id]) }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg w-full text-center inline-block">
+                Go to Lesson
+            </a>
+        @endif
     @endif
 @endsection

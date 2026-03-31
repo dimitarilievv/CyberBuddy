@@ -53,6 +53,11 @@ class ModuleController extends Controller
         $module = $this->moduleService->getModuleBySlug($slug);
         $this->moduleService->enrollUser(auth()->id(), $module->id);
 
+        $firstLesson = $module->lessons()->where('is_published', true)->orderBy('sort_order')->first();
+        if ($firstLesson) {
+            return redirect()->route('lessons.show', [$module->id, $firstLesson->id])
+                ->with('success', 'Successfully enrolled! Mission started.');
+        }
         return redirect()->route('modules.show', $slug)
             ->with('success', 'Successfully enrolled!');
     }

@@ -76,8 +76,38 @@
                                 {{ $module->estimated_duration ?? '5' }} min
                             </div>
                             <div class="font-semibold text-blue-600 text-xs mb-3">+{{ $module->xp ?? '50' }} XP</div>
-                            <a href="{{ route('modules.show', $module->slug) }}" class="mt-auto text-center inline-block py-2 px-4 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs shadow-sm transition">Start Mission</a>
-                        </div>
+                            @php
+                                $status = 'not_started';
+                                $progress = 0;
+                                if (isset($user)) {
+                                    $progressData = app('App\\Services\\ModuleService')->getUserModuleProgress($user->id, $module->id);
+                                    $progress = $progressData['progress'];
+                                    $status = $progressData['status'];
+                                }
+                            @endphp
+
+                            @if($status == 'completed')
+                                <span class="mt-auto w-full inline-block py-2 px-4 rounded-full bg-green-100 text-green-700 font-bold text-xs text-center shadow-sm cursor-default">Completed &#x2714;</span>
+                            @elseif($status == 'enrolled' && $progress > 0)
+                                <a href="{{ route('modules.show', $module->slug) }}"
+                                   class="mt-auto text-center inline-block py-2 px-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition">
+                                    Continue Mission
+                                </a>
+                            @elseif($status == 'enrolled')
+                                <a href="{{ route('modules.show', $module->slug) }}"
+                                   class="mt-auto text-center inline-block py-2 px-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition">
+                                    Review Content
+                                </a>
+                            @else
+                                <!-- Change this portion only for "Start Mission" to be a form! -->
+                                <form method="POST" action="{{ route('modules.enroll', $module->slug) }}" class="mt-auto w-full">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full py-2 px-4 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs shadow-sm transition">
+                                        Start Mission
+                                    </button>
+                                </form>
+                            @endif            </div>
                     </div>
                 @empty
                     <div class="col-span-4 text-center py-10 text-gray-400">No missions found.</div>
