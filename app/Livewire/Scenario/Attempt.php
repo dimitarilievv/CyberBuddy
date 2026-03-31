@@ -5,6 +5,8 @@ namespace App\Livewire\Scenario;
 use App\Models\Scenario;
 use App\Models\ScenarioAttempt;
 use App\Models\Lesson;
+use App\Models\Enrollment;
+use App\Models\UserProgress;
 use Livewire\Component;
 
 class Attempt extends Component
@@ -92,6 +94,55 @@ class Attempt extends Component
             \Log::warning('Could not compute next lesson', ['error' => $e->getMessage()]);
             $this->nextLesson = null;
         }
+    }
+
+    // Add method to handle "Back to Lessons" action
+    public function backToLessons()
+    {
+        $lesson = $this->scenario->lesson ?? null;
+
+        // If no lesson or user not authenticated, just redirect to modules index
+        if (!$lesson || !auth()->check()) {
+            return redirect()->route('modules.index');
+        }
+
+        $module = $lesson->module;
+        if (!$module) {
+            return redirect()->route('modules.index');
+        }
+
+        // Always mark the current lesson as completed for the user (they finished the scenario)
+        $enrollment = Enrollment::where('user_id', auth()->id())
+            ->where('module_id', $module->id)
+            ->first();
+
+        if ($enrollment) {
+            UserProgress::updateOrCreate(
+                ['user_id' => auth()->id(), 'lesson_id' => $lesson->id],
+                [
+                    'enrollment_id' => $enrollment->id,
+                    'status' => 'completed',
+                    'completed_at' => now(),
+                ]
+            );
+
+            // Recalculate module progress percentage and update enrollment
+            $totalLessons = $module->lessons()->where('is_published', true)->count();
+            $completedLessons = UserProgress::where('enrollment_id', $enrollment->id)
+                ->where('status', 'completed')
+                ->count();
+
+            $percentage = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
+
+            $enrollment->update([
+                'progress_percentage' => $percentage,
+                'status' => $percentage >= 100 ? 'completed' : 'in_progress',
+                'completed_at' => $percentage >= 100 ? now() : null,
+            ]);
+        }
+
+        // Always redirect to the modules index (do not send user to module page with its "back" button)
+        return redirect()->route('modules.index');
     }
 
     public function render()

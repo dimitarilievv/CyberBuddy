@@ -50,43 +50,49 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                         @foreach($options as $optionKey => $optionText)
                             @php
+                                // Display key: if option keys are numeric (0,1,14,...) show A,B,C... instead
+                                $displayKey = is_numeric($optionKey) ? chr(65 + $loop->index) : (string) $optionKey;
+
                                 $isSelected = false;
                                 if ($currentQuestion->type === 'multiple_choice') {
-                                    $isSelected = is_array($currentAnswer) && in_array($optionKey, $currentAnswer);
+                                    $isSelected = is_array($currentAnswer) && in_array($displayKey, $currentAnswer);
                                 } else {
-                                    $isSelected = $currentAnswer === $optionKey;
+                                    $isSelected = $currentAnswer === $displayKey;
                                 }
                             @endphp
 
-                            <label class="relative flex items-center p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 cursor-pointer transition group {{ $isSelected ? 'border-blue-500 bg-blue-50' : '' }}">
+                            <label wire:key="q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}" class="relative flex items-center p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 cursor-pointer transition group pl-6 {{ $isSelected ? 'border-blue-500 bg-blue-50' : '' }}">
                                 @if($currentQuestion->type === 'multiple_choice')
                                     <input
+                                        wire:key="input-q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}"
                                         type="checkbox"
-                                        name="answer"
-                                        value="{{ $optionKey }}"
-                                        wire:change="selectAnswer('{{ $optionKey }}')"
-                                        {{ $isSelected ? 'checked' : '' }}
-                                        class="w-5 h-5 text-purple-600 cursor-pointer rounded"
+                                        name="answer_{{ $currentQuestion->id }}[]"
+                                        value="{{ $displayKey }}"
+                                        wire:model="selectedAnswers.{{ $currentQuestion->id }}"
+                                        class="left-4 top-4 w-5 h-5"
+                                        style="accent-color: #0ea5e9;"
                                     >
                                 @else
                                     <input
+                                        wire:key="input-q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}"
                                         type="radio"
-                                        name="answer"
-                                        value="{{ $optionKey }}"
-                                        wire:change="selectAnswer('{{ $optionKey }}')"
-                                        {{ $isSelected ? 'checked' : '' }}
-                                        class="w-5 h-5 text-blue-600 cursor-pointer"
+                                        name="answer_{{ $currentQuestion->id }}"
+                                        value="{{ $displayKey }}"
+                                        wire:model="selectedAnswers.{{ $currentQuestion->id }}"
+                                        class="left-4 top-4 w-5 h-5"
+                                        style="accent-color: #0ea5e9;"
                                     >
                                 @endif
 
                                 <div class="ml-4 flex-1">
-                                    <span class="block text-sm font-semibold text-gray-900 mb-1">{{ $optionKey }}</span>
+                                    <span class="block text-sm font-semibold text-gray-900 mb-1">{{ $displayKey }}</span>
                                     <span class="text-gray-700">{{ $optionText }}</span>
                                 </div>
-                                <span class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-blue-500 text-sm font-semibold text-gray-400 group-hover:text-blue-600 transition {{ $isSelected ? 'border-blue-500 text-blue-600 bg-blue-50' : '' }}">{{ $optionKey }}</span>
+                                <span class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-blue-500 text-sm font-semibold text-gray-400 group-hover:text-blue-600 transition {{ $isSelected ? 'border-blue-500 text-blue-600 bg-blue-50' : '' }}">{{ $displayKey }}</span>
                             </label>
                         @endforeach
                     </div>
+
                 @else
                     <p class="text-gray-500 text-center py-8">No options available for this question.</p>
                 @endif
@@ -115,8 +121,8 @@
                     @if($questionNumber === $totalQuestions)
                         <button
                             wire:click="submit"
-                            {{ !$this->canProceed() ? 'disabled' : '' }}
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            wire:loading.attr="disabled"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2"
                         >
                             Submit Quiz
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,8 +132,8 @@
                     @else
                         <button
                             wire:click="nextQuestion"
-                            {{ !$this->canProceed() ? 'disabled' : '' }}
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            wire:loading.attr="disabled"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2"
                         >
                             Next Question
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

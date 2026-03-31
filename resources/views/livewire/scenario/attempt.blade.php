@@ -181,10 +181,10 @@
 
                 <div class="mt-4 flex gap-3">
                     {{-- Back to lessons (module page) --}}
-                    <a href="{{ route('modules.index') }}"
-                       class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
+                    <button wire:click="backToLessons"
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
                         Back to Modules
-                    </a>
+                    </button>
 
                     {{-- Next lesson: active when available, otherwise show disabled button --}}
                     @if($nextLesson)
