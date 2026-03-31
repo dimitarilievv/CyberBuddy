@@ -4,6 +4,7 @@ namespace App\Livewire\Scenario;
 
 use App\Models\Scenario;
 use App\Models\ScenarioAttempt;
+use App\Models\Lesson;
 use Livewire\Component;
 
 class Attempt extends Component
@@ -14,6 +15,11 @@ class Attempt extends Component
     public $currentExplanation = null;
     public $startTime;
 
+    // Result-related state
+    public ?ScenarioAttempt $resultAttempt = null;
+    public bool $showResult = false;
+    public ?Lesson $nextLesson = null;
+
     public function mount(Scenario $scenario)
     {
         \Log::info('🔵 Scenario mount', [
@@ -22,7 +28,7 @@ class Attempt extends Component
             'choices_count' => $scenario->choices()->count(),
         ]);
 
-        $this->scenario = $scenario->load('choices');
+        $this->scenario = $scenario->load('choices', 'lesson.module');
         $this->startTime = time();
 
         \Log::info('🔵 After load', [
@@ -69,7 +75,23 @@ class Attempt extends Component
             'time_spent_seconds' => $timeSpent,
         ]);
 
-        return redirect()->route('scenario.result', $attempt->id);
+        // Keep result on the same page: store attempt and show result UI
+        $this->resultAttempt = $attempt->fresh(['scenario', 'user', 'chosenChoice']);
+        $this->showResult = true;
+
+        // Compute next lesson (if available)
+        try {
+            $lesson = $this->scenario->lesson;
+            if ($lesson) {
+                $this->nextLesson = Lesson::where('module_id', $lesson->module_id)
+                    ->where('sort_order', '>', ($lesson->sort_order ?? 0))
+                    ->orderBy('sort_order')
+                    ->first();
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Could not compute next lesson', ['error' => $e->getMessage()]);
+            $this->nextLesson = null;
+        }
     }
 
     public function render()
@@ -88,6 +110,9 @@ class Attempt extends Component
             'selectedChoice' => $this->selectedChoice,
             'scenarioProgress' => $scenarioProgress,
             'totalScenarios' => $totalScenarios,
+            'showResult' => $this->showResult,
+            'resultAttempt' => $this->resultAttempt,
+            'nextLesson' => $this->nextLesson,
         ])->layout('layouts.app');
     }
 }

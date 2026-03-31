@@ -1,152 +1,210 @@
-<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 py-8 px-4">
-    <div class="max-w-5xl mx-auto">
+<div class="min-h-screen bg-slate-50 py-10 px-4">
+    <div class="max-w-6xl mx-auto space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-start justify-between gap-4">
             <div>
-                <p class="text-cyan-600 text-sm font-semibold uppercase tracking-wide">Interactive Scenario</p>
-                <h1 class="text-4xl font-bold text-slate-900 mt-1">{{ $scenario->title }}</h1>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 text-xs font-semibold uppercase tracking-wide border border-cyan-100">
+                    Interactive Scenario
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">
+                    {{ $scenario->title }}
+                </h1>
             </div>
-            <a href="{{ route('modules.index') }}" class="bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-2 rounded-lg border border-slate-200 transition">
+
+            <a href="{{ route('modules.index') }}"
+               class="shrink-0 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2 rounded-full border border-slate-200 shadow-sm transition">
                 Exit to Modules
             </a>
         </div>
 
-        <!-- Mission Status -->
-        <div class="bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200 rounded-lg p-6 mb-8">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xl">
-                        🎯
+        <!-- Mission Status (light blue bar) -->
+        <div class="bg-sky-100/70 border border-sky-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center">
+                        <!-- simple target-ish icon -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 21a9 9 0 1 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 15a3 3 0 1 0-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M21 12h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
                     </div>
-                    <div>
-                        <p class="text-cyan-600 text-sm font-bold uppercase">CURRENT MISSION</p>
-                        <p class="text-slate-900 font-bold text-lg">{{ $scenario->module->name ?? 'Module' }} - Security Training</p>
+                    <div class="leading-tight">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-sky-700">
+                            Current Mission
+                        </p>
+                        <p class="text-slate-900 font-bold text-sm">
+                            {{ $scenario->module->name ?? 'Module' }} - Security Training
+                        </p>
                     </div>
                 </div>
+
                 <div class="text-right">
-                    <p class="text-cyan-600 text-sm font-bold">Scenario {{ $scenarioProgress }} of {{ $totalScenarios }}</p>
-                    <div class="w-32 h-2 bg-slate-200 rounded-full mt-2 overflow-hidden">
-                        <div class="h-full bg-cyan-500 transition-all" style="width: {{ ($scenarioProgress / $totalScenarios) * 100 }}%"></div>
+                    <p class="text-xs font-semibold text-slate-700">
+                        Scenario {{ $scenarioProgress }} of {{ $totalScenarios }}
+                    </p>
+                    <div class="mt-2 w-44 h-2 bg-white/70 rounded-full overflow-hidden border border-sky-200">
+                        <div class="h-full bg-sky-500"
+                             style="width: {{ ($scenarioProgress / max(1, $totalScenarios)) * 100 }}%"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Scenario Image & Message (Left) -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg overflow-hidden shadow-lg">
-                    <!-- Image -->
+        <!-- Hero Card (image left, message right) -->
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- Image -->
+                <div class="relative min-h-[280px] lg:min-h-[380px] bg-slate-100">
                     @if($scenario->image_url)
-                        <div class="h-80 bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center overflow-hidden">
-                            <img src="{{ $scenario->image_url }}" alt="{{ $scenario->title }}" class="w-full h-full object-cover">
-                        </div>
+                        <img src="{{ $scenario->image_url }}"
+                             alt="{{ $scenario->title }}"
+                             class="absolute inset-0 w-full h-full object-cover">
+                        <!-- soft fade to the right like screenshot -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/20 via-black/10 to-white/90"></div>
                     @else
-                        <div class="h-80 bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white">
+                        <div class="absolute inset-0 bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white">
                             <span class="text-6xl">{{ $scenario->icon ?? '📱' }}</span>
                         </div>
                     @endif
-
-                    <!-- Message Section -->
-                    <div class="p-8">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-white text-sm">
-                                ✓
-                            </div>
-                            <p class="text-cyan-600 text-xs font-bold uppercase tracking-widest">INCOMING MESSAGE</p>
-                        </div>
-
-                        <p class="text-slate-800 text-lg leading-relaxed italic border-l-4 border-cyan-500 pl-6 py-4">
-                            "{{ $scenario->scenario_text }}"
-                        </p>
-
-                        <!-- Message Indicator -->
-                        <div class="mt-6 flex items-center gap-2 text-slate-500 text-sm">
-                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                            <span class="ml-2">{{ $choices->count() }} CHOICES AVAILABLE</span>
-                        </div>
-                    </div>
                 </div>
-            </div>
 
-            <!-- Choices (Right) -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden sticky top-8">
-                    <div class="bg-gradient-to-r from-cyan-500 to-blue-500 p-6">
-                        <div class="flex items-center gap-2">
-                            <div class="text-2xl">❓</div>
-                            <h2 class="text-white font-bold text-lg">What will you do?</h2>
+                <!-- Message -->
+                <div class="p-7 sm:p-10">
+                    <div class="flex items-center gap-3 text-slate-600">
+                        <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                            <svg class="w-5 h-5 text-sky-600" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 6h16v10H7l-3 3V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
                         </div>
-                        <p class="text-cyan-100 text-xs mt-2 uppercase tracking-wide font-semibold">DECISION REQUIRED</p>
+                        <p class="text-xs font-extrabold uppercase tracking-widest">
+                            Incoming Message
+                        </p>
                     </div>
 
-                    <div class="p-6 space-y-4">
-                        @if($choices->count() > 0)
-                            @foreach($choices as $choice)
-                                @php
-                                    $isSelected = $selectedChoice && $selectedChoice['id'] === $choice->id;
-                                @endphp
+                    <div class="mt-5 border-l-4 border-sky-500 pl-5">
+                        <p class="text-slate-800 text-lg leading-relaxed font-medium">
+                            “{{ $scenario->situation }}”
+                        </p>
+                    </div>
 
-                                <button
-                                    wire:click="selectChoice({{ $choice->id }})"
-                                    class="w-full text-left p-4 rounded-lg border-2 transition-all {{ $isSelected ? 'border-cyan-500 bg-cyan-50' : 'border-slate-200 bg-slate-50 hover:border-cyan-300 hover:bg-white' }}"
-                                >
-                                    <div class="flex items-start gap-3">
-                                        <div class="text-xl flex-shrink-0 mt-1">{{ $choice->icon ?? '⚡' }}</div>
-                                        <div class="flex-1 min-w-0">
-                                            <h3 class="font-bold text-slate-900 text-sm mb-1">{{ $choice->choice_text }}</h3>
-                                            <p class="text-slate-600 text-xs leading-snug">{{ $choice->consequence }}</p>
-                                        </div>
-                                        @if($isSelected)
-                                            <svg class="w-5 h-5 text-cyan-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                            </svg>
-                                        @endif
-                                    </div>
-                                </button>
-                            @endforeach
-                        @endif
-
-                        <!-- Submit Button -->
-                        <button
-                            wire:click="submit"
-                            {{ !$selectedChoice ? 'disabled' : '' }}
-                            class="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            @if($selectedChoice)
-                                Submit Choice
-                            @else
-                                Select an option
-                            @endif
-                        </button>
+                    <div class="mt-8 flex items-center gap-3 text-slate-500 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">1</span>
+                            <span class="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">2</span>
+                            <span class="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">3</span>
+                        </div>
+                        <span class="font-semibold uppercase tracking-wide">
+                            {{ $choices->count() }} choices available
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Explanation Box -->
+        <!-- Choices Header -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-slate-900 font-bold">
+                <span class="w-6 h-6 rounded-full border border-sky-200 bg-sky-50 text-sky-700 flex items-center justify-center">
+                    ?
+                </span>
+                <span>What will you do?</span>
+            </div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
+                Decision Required
+            </span>
+        </div>
+
+        <!-- Choices Grid (3 cards) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach($choices as $choice)
+                @php
+                    $isSelected = $selectedChoice && $selectedChoice['id'] === $choice->id;
+                @endphp
+
+                <button
+                    wire:click="selectChoice({{ $choice->id }})"
+                    class="text-left bg-white border rounded-2xl p-6 shadow-sm transition
+                           {{ $isSelected ? 'border-sky-500 ring-2 ring-sky-100' : 'border-slate-200 hover:border-slate-300 hover:shadow' }}"
+                >
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-700 text-xl">
+                            {{ $choice->icon ?? '⚡' }}
+                        </div>
+
+                        <div class="min-w-0">
+                            <h3 class="font-extrabold text-slate-900">
+                                {{ $choice->choice_text }}
+                            </h3>
+                            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                                {{ $choice->consequence }}
+                            </p>
+                        </div>
+                    </div>
+                </button>
+            @endforeach
+        </div>
+
+        <!-- Submit -->
+        <div class="pt-2">
+            <button
+                wire:click="submit"
+                {{ !$selectedChoice ? 'disabled' : '' }}
+                class="w-full sm:w-auto px-6 py-3 rounded-xl font-bold text-white transition
+                       bg-sky-500 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                {{ $selectedChoice ? 'Submit Choice' : 'Select an option' }}
+            </button>
+        </div>
+
+        <!-- Explanation Box (optional) -->
         @if($showExplanation && $currentExplanation)
-            <div class="mt-8 bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-500 p-6 rounded-lg">
-                <div class="flex items-start gap-4">
-                    <div class="text-3xl flex-shrink-0">💡</div>
+            <div class="bg-sky-50 border border-sky-200 rounded-2xl p-6">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white border border-sky-200 flex items-center justify-center">
+                        💡
+                    </div>
                     <div>
-                        <h3 class="font-bold text-cyan-900 mb-2">Why is this important?</h3>
-                        <p class="text-slate-700 leading-relaxed">{{ $currentExplanation }}</p>
+                        <h3 class="font-extrabold text-slate-900">Why is this important?</h3>
+                        <p class="mt-1 text-slate-700 leading-relaxed">{{ $currentExplanation }}</p>
                     </div>
                 </div>
             </div>
         @endif
 
-        <!-- Safety Tips -->
-        <div class="mt-8 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 p-6 rounded-lg">
-            <div class="flex items-start gap-4">
-                <div class="text-2xl flex-shrink-0">⚠️</div>
+        <!-- Inline Result (shown after submit) -->
+        @if(isset($showResult) && $showResult && isset($resultAttempt) && $resultAttempt)
+            <div class="mt-6 bg-white border border-slate-200 rounded-2xl p-6">
+                <h3 class="text-lg font-bold">Result</h3>
+                <p class="mt-2">Score: <strong>{{ $resultAttempt->safety_score }}%</strong></p>
+                <p class="mt-1">Feedback: <em>{{ $resultAttempt->ai_feedback }}</em></p>
+
+                <div class="mt-4 flex gap-3">
+                    {{-- Back to lessons (module page) --}}
+                    <a href="{{ route('modules.index') }}"
+                       class="bg-gray-200 text-gray-700 px-4 py-2 rounded">
+                        Back to Modules
+                    </a>
+
+                    {{-- Next lesson: active when available, otherwise show disabled button --}}
+                    @if($nextLesson)
+                        <a href="{{ route('lessons.show', [$nextLesson->module_id, $nextLesson->id]) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Next Lesson</a>
+                    @else
+                        <button disabled class="bg-green-500 text-white px-4 py-2 rounded opacity-50 cursor-not-allowed">Next Lesson</button>
+                    @endif
+                </div>
+            </div>
+        @endif
+
+        <!-- Safety Tips (bottom bar) -->
+        <div class="bg-cyan-50 border border-cyan-200 rounded-2xl p-6">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-cyan-200 flex items-center justify-center">
+                    ⚠️
+                </div>
                 <div>
-                    <h3 class="font-bold text-amber-900 mb-1">Safety Reminder</h3>
-                    <p class="text-slate-700 text-sm">
+                    <h3 class="font-extrabold text-slate-900">Safety Reminder</h3>
+                    <p class="mt-1 text-sm text-slate-700 leading-relaxed">
                         If you ever feel pressured to give away your password or personal details, stop and think. High-pressure "limited time" offers are a common trick used by scammers!
                     </p>
                 </div>

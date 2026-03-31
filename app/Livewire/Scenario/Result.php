@@ -28,12 +28,17 @@ class Result extends Component
             $this->badgesEarned[] = ['name' => 'Perfect Score', 'icon' => '⭐'];
         }
 
-        $successfulAttempts = $this->attempt->user->scenarioAttempts()
-            ->where('safety_score', '>=', 70)
-            ->count();
+        // Avoid calling undefined relationship on User; query ScenarioAttempt directly
+        $userId = $this->attempt->user_id ?? ($this->attempt->user->id ?? null);
 
-        if ($successfulAttempts >= 5) {
-            $this->badgesEarned[] = ['name' => 'Safety Expert', 'icon' => '🎓'];
+        if ($userId) {
+            $successfulAttempts = ScenarioAttempt::where('user_id', $userId)
+                ->where('safety_score', '>=', 70)
+                ->count();
+
+            if ($successfulAttempts >= 5) {
+                $this->badgesEarned[] = ['name' => 'Safety Expert', 'icon' => '🎓'];
+            }
         }
     }
 

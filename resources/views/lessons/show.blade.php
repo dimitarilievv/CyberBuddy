@@ -274,9 +274,25 @@
                             </button>
                         @endif
 
-                        @if($lesson->type === 'scenario')
-                            <a href="{{ route('scenarios.for_lesson', $lesson->id) }}" class="w-full mt-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition block">
+                        @php
+                            // Find first published scenario for this lesson (if any)
+                            try {
+                                $firstScenario = $lesson->scenarios()->where('is_published', true)->first();
+                            } catch (\Throwable $e) {
+                                // Fallback if relationship/method not available in view
+                                $firstScenario = null;
+                            }
+                        @endphp
+
+                        @if($firstScenario)
+                            {{-- If a scenario exists, link directly to the Livewire attempt page for a smoother UX --}}
+                            <a href="{{ route('scenarios.show', $firstScenario->id) }}" class="w-full mt-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg text-center transition block">
                                 Take the Scenario →
+                            </a>
+                        @else
+                            {{-- No direct scenario available: link to the lesson's scenario list as a fallback --}}
+                            <a href="{{ route('scenarios.for_lesson', $lesson->id) }}" class="w-full mt-3 bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg text-center transition block">
+                                View Scenarios →
                             </a>
                         @endif
 
