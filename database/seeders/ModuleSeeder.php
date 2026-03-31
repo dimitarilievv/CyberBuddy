@@ -9,7 +9,7 @@ class ModuleSeeder extends Seeder
 {
     public function run(): void
     {
-        $teacher = User::where('email', 'teacher@cyberbuddy.mk')->first();
+        $teacher = User::where('email', 'teacher_marija@cyberbuddy.mk')->first();
         $modules = [
             [
                 'title' => 'Strong Passwords - Your First Defense',
@@ -23,7 +23,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 1,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'recommended'],
-                'thumbnail' => '/img/modules/pass.png',
+                'thumbnail' => '/img/modules/basic.gif',
             ],
             [
                 'title' => 'Recognize Phishing',
@@ -37,7 +37,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 2,
                 'is_published' => true,
                 'tags' => ['intermediate', 'scenario', 'popular'],
-                'thumbnail' => '/img/modules/pass.png',
+                'thumbnail' => '/img/modules/basic2.gif',
             ],
             [
                 'title' => 'Social Media Safety',
@@ -51,7 +51,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 3,
                 'is_published' => true,
                 'tags' => ['beginner', 'popular', 'new'],
-                'thumbnail' => '/img/modules/online.png',
+                'thumbnail' => '/img/modules/basic4.gif',
             ],
             [
                 'title' => 'Stop Cyberbullying',
@@ -65,7 +65,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 4,
                 'is_published' => true,
                 'tags' => ['beginner', 'mandatory', 'scenario'],
-                'thumbnail' => '/img/modules/cyber.jpeg',
+                'thumbnail' => '/img/modules/basic3.gif',
             ],
             [
                 'title' => 'Safe Gaming',
@@ -79,7 +79,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 5,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'new'],
-                'thumbnail' => '/img/modules/gaming.jpeg',
+                'thumbnail' => '/img/modules/basic.gif',
             ],
             [
                 'title' => 'Parent Guide: Online Safety',
@@ -93,7 +93,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 6,
                 'is_published' => true,
                 'tags' => ['recommended'],
-                'thumbnail' => '/img/modules/online.png',
+                'thumbnail' => '/img/modules/basic3.gif',
             ],
             [
                 'title' => 'Device Security',
@@ -107,7 +107,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 7,
                 'is_published' => true,
                 'tags' => ['beginner', 'interactive', 'recommended'],
-                'thumbnail' => '/img/modules/pass.png',
+                'thumbnail' => '/img/modules/basic4.gif',
             ],
             [
                 'title' => 'Privacy Settings',
@@ -121,7 +121,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 8,
                 'is_published' => true,
                 'tags' => ['beginner', 'privacy', 'interactive'],
-                'thumbnail' => '/img/modules/pass.png',
+                'thumbnail' => '/img/modules/basic3.gif',
             ],
             [
                 'title' => 'Digital Footprint',
@@ -135,7 +135,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 9,
                 'is_published' => true,
                 'tags' => ['beginner', 'privacy', 'recommended'],
-                'thumbnail' => '/img/modules/pass.png',
+                'thumbnail' => '/img/modules/basic4.gif',
             ],
             [
                 'title' => 'Fake News Detection',
@@ -149,7 +149,7 @@ class ModuleSeeder extends Seeder
                 'sort_order' => 10,
                 'is_published' => true,
                 'tags' => ['intermediate', 'media', 'critical-thinking'],
-                'thumbnail' => '/img/modules/cyber.png',
+                'thumbnail' => '/img/modules/basic.gif',
 
             ],
         ];

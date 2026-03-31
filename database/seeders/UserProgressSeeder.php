@@ -13,46 +13,56 @@ class UserProgressSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::where('role', 'child')->first(); // CHANGED THIS LINE
-        $lesson = Lesson::where('slug', 'password-quiz-lesson')->first();
-        $enrollment = Enrollment::where('user_id', $user?->id ?? 0)
-            ->where('module_id', $lesson?->module_id ?? 0)
-            ->first();
+        $children = User::where('role', 'child')->get();
 
-        if (!($user && $lesson && $enrollment)) {
-            $this->command->warn("Missing user, lesson, or enrollment for UserProgressSeeder. Skipping seeding.");
+        if ($children->isEmpty()) {
+            $this->command->warn('No children users found.');
             return;
         }
 
-        $progressData = [
-            [
-                'user_id'           => $user->id,
-                'lesson_id'         => $lesson->id,
-                'enrollment_id'     => $enrollment->id,
-                'status'            => 'in_progress',
-                'time_spent_seconds'=> 150,
-                'started_at'        => Carbon::now()->subDays(1),
-                'completed_at'      => null,
-            ],
-            [
-                'user_id'           => $user->id,
-                'lesson_id'         => $lesson->id,
-                'enrollment_id'     => $enrollment->id,
-                'status'            => 'completed',
-                'time_spent_seconds'=> 300,
-                'started_at'        => Carbon::now()->subDays(2),
-                'completed_at'      => Carbon::now()->subDay(),
-            ],
-        ];
+        $progressCount = 0;
 
-        foreach ($progressData as $data) {
-            UserProgress::updateOrCreate(
-                [
-                    'user_id' => $data['user_id'],
-                    'lesson_id' => $data['lesson_id'],
-                ],
-                $data
-            );
+        foreach ($children as $child) {
+            $enrollments = Enrollment::where('user_id', $child->id)->get();
+
+            foreach ($enrollments as $enrollment) {
+                $lessons = Lesson::where('module_id', $enrollment->module_id)
+                    ->where('is_published', true)
+                    ->get();
+
+                foreach ($lessons as $lesson) {
+                    // Determine if this lesson should be completed based on enrollment progress
+                    $isCompleted = rand(1, 100) <= $enrollment->progress_percentage;
+
+                    $status = $isCompleted ? 'completed' : 'in_progress';
+                    $timeSpent = $isCompleted
+                        ? $lesson->estimated_minutes * 60
+                        : rand(30, $lesson->estimated_minutes * 60);
+
+                    $startedAt = $enrollment->enrolled_at->copy()->addDays(rand(0, 5));
+                    $completedAt = $isCompleted
+                        ? $startedAt->copy()->addMinutes($lesson->estimated_minutes)
+                        : null;
+
+                    UserProgress::updateOrCreate(
+                        [
+                            'user_id' => $child->id,
+                            'lesson_id' => $lesson->id,
+                        ],
+                        [
+                            'enrollment_id' => $enrollment->id,
+                            'status' => $status,
+                            'time_spent_seconds' => $timeSpent,
+                            'started_at' => $startedAt,
+                            'completed_at' => $completedAt,
+                        ]
+                    );
+
+                    $progressCount++;
+                }
+            }
         }
+
+        $this->command->info("UserProgressSeeder complete. Created/updated {$progressCount} progress records.");
     }
 }
