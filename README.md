@@ -1,59 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CyberBuddy – Online Safety Educational Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CyberBuddy is an educational web platform that teaches children (ages 10–13) online safety through interactive lessons, quizzes, real-life scenarios, AI-assisted feedback, and gamification.
 
-## About Laravel
+The platform is designed for multiple roles: **children, parents, teachers, and admins**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Core Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Role-based learning platform**
+  - User roles and permissions (child, parent, teacher, admin)
+  - Parent–child relationship support
+- **Structured learning content**
+  - Categories, modules, lessons, resources, tags
+- **Interactive cybersecurity scenarios**
+  - Real-life decision-making scenarios
+  - Multiple choices with consequences and safety scores
+  - AI explanations for safer behavior
+- **Quiz system**
+  - Lesson-based quizzes with attempts, scoring, and feedback
+  - Multiple question types support
+- **Progress tracking**
+  - Enrollment, lesson progress, completion status, time spent
+- **Gamification**
+  - Badges, streaks, points, leaderboard
+- **Certificates**
+  - Auto-generated PDF certificates for completed modules
+- **AI-powered content and feedback**
+  - AI-generated lessons, quizzes, and scenarios
+  - AI interaction logging for monitoring and cost tracking
+  - AI content suggestions with human approval workflow
+- **Safety and moderation**
+  - Reported content workflow
+  - Activity logs and notifications
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🛠️ Technology Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Frontend
+- **Laravel Blade** – server-rendered templates
+- **Livewire 3** – reactive UI without a heavy JS framework
+- **Tailwind CSS 3** – styling
+- **Alpine.js** – lightweight frontend interactions
+- **Chart.js** – progress and analytics charts
 
-## Laravel Sponsors
+### Backend
+- **PHP 8.2+**
+- **Laravel 11**
+- **Laravel Breeze** – authentication scaffolding
+- **Spatie Permission** – roles & permissions
+- **Spatie MediaLibrary** – file/media management
+- **Barryvdh DomPDF** – PDF certificate generation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### AI
+- **Gemini 2.5 Flash** – AI generation and feedback workflows
 
-### Premium Partners
+### Database
+- **PostgreSQL 16**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🧱 Core Models
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- User, UserProfile
+- Category, Module, Lesson, Resource, Tag, MediaFile
+- Scenario, ScenarioChoice, ScenarioAttempt
+- Quiz, Question, QuizAttempt, QuestionAnswer
+- Enrollment, UserProgress
+- Badge, UserBadge, Leaderboard
+- Certificate
+- AIInteraction, AIContentSuggestion
+- Notification, ActivityLog, ReportedContent
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 👥 Contributors
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Dimitar Iliev**
+- **Nina Kostanova**
+- **Damjan Karadakoski**
