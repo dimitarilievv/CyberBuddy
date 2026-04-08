@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\QuizAttemptAnswer;
 
 class QuizAttempt extends Model
 {
@@ -26,9 +25,9 @@ class QuizAttempt extends Model
     protected function casts(): array
     {
         return [
-            'score'            => 'float',
-            'started_at'       => 'datetime',
-            'submitted_at'     => 'datetime',
+            'score'        => 'float',
+            'started_at'   => 'datetime',
+            'submitted_at' => 'datetime',
         ];
     }
 
@@ -52,7 +51,8 @@ class QuizAttempt extends Model
     {
         return $this->answers();
     }
-    public function getIsPastedAttribute(): bool
+
+    public function getIsPassedAttribute(): bool
     {
         return $this->score !== null
             && $this->quiz
@@ -61,9 +61,11 @@ class QuizAttempt extends Model
 
     public function getTimeSpentFormattedAttribute(): string
     {
-        $minutes = intdiv($this->time_spent_seconds ?? 0, 60);
-        $seconds = ($this->time_spent_seconds ?? 0) % 60;
+        $seconds = $this->time_spent_seconds ?? 0;
 
-        return sprintf('%02d:%02d', $minutes, $seconds);
+        $minutes = intdiv($seconds, 60);
+        $remainingSeconds = $seconds % 60;
+
+        return sprintf('%02d:%02d', $minutes, $remainingSeconds);
     }
 }

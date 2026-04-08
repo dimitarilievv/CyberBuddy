@@ -4,21 +4,20 @@ namespace App\Livewire\Quiz;
 
 use App\Models\Quiz;
 use Livewire\Component;
-
+use Livewire\Attributes\Reactive;
 class Timer extends Component
 {
-    public $quizId;
-    public $timeLeft;
+    public int $quizId;
+    public int $timeLeft = 0;   // seconds
 
-    #[Reactive]
-    public $duration;
-
-    public function mount($quizId)
+    public function mount(int $quizId): void
     {
         $this->quizId = $quizId;
-        $quiz = Quiz::find($quizId);
-        $this->timeLeft = $quiz->time_limit * 60; // Convert to seconds
-        $this->duration = $this->timeLeft;
+
+        $quiz = Quiz::findOrFail($quizId);
+
+        $minutes = $quiz->time_limit ?? 10;
+        $this->timeLeft = $minutes * 60;
     }
 
     public function render()

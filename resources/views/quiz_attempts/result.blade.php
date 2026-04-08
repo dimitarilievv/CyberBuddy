@@ -12,10 +12,29 @@
         <h2 class="text-xl font-semibold mt-6 mb-2">Your Answers</h2>
         <div class="space-y-4">
             @foreach($attempt->questionAnswers as $answer)
+                @php
+                    $formatValue = function($val) {
+                        if (is_null($val)) return '';
+                        if (is_string($val)) return $val;
+                        if (is_array($val) || $val instanceof \Illuminate\Support\Collection) {
+                            $flattened = collect($val)->flatten()->map(function($i) {
+                                return is_array($i) ? json_encode($i) : (string) $i;
+                            })->filter()->all();
+
+                            return implode(', ', $flattened);
+                        }
+
+                        return (string) $val;
+                    };
+
+                    $givenDisplay = $formatValue($answer->given_answer ?? '');
+                    $correctDisplay = $formatValue($answer->question->correct_answer ?? '');
+                @endphp
+
                 <div class="p-4 border rounded-lg {{ $answer->is_correct ? 'bg-green-50' : 'bg-red-50' }}">
                     <p class="font-semibold">Q{{ $loop->iteration }}: {{ $answer->question->question_text }}</p>
-                    <p>Given Answer: <strong>{{ $answer->given_answer }}</strong></p>
-                    <p>Correct Answer: <strong>{{ $answer->question->correct_answer }}</strong></p>
+                    <p>Given Answer: <strong>{{ $givenDisplay }}</strong></p>
+                    <p>Correct Answer: <strong>{{ $correctDisplay }}</strong></p>
                     <p>Status: <span class="{{ $answer->is_correct ? 'text-green-600' : 'text-red-600' }}">{{ $answer->is_correct ? 'Correct' : 'Incorrect' }}</span></p>
                     <p>Points Earned: <strong>{{ $answer->points_earned }}</strong></p>
                 </div>
