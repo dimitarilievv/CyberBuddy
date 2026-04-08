@@ -12,16 +12,52 @@
             <span class="text-white text-sm font-semibold bg-white/20 px-3 py-1 rounded-full">Read carefully!</span>
         </div>
 
-        <!-- Question -->
+        <!-- Question / Review Area -->
         <div class="p-8">
-            @if($currentQuestion)
+
+            {{-- DEBUG: remove later --}}
+{{--            <pre class="text-xs bg-gray-100 p-2 mb-4">--}}
+{{--selectedAnswers: @json($selectedAnswers ?? [])--}}
+{{--            </pre>--}}
+
+            @if($showReview)
+                {{-- REVIEW SCREEN --}}
+                <div class="text-center py-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                        Review your answers
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        You have reached the end of the quiz. You can go back to change answers, or finish the quiz now.
+                    </p>
+
+                    <div class="flex items-center justify-center gap-4">
+                        <button
+                            wire:click="$set('showReview', false)"
+                            class="px-6 py-3 rounded-full border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition"
+                        >
+                            Go Back to Questions
+                        </button>
+
+                        <button
+                            wire:click="submit"
+                            wire:loading.attr="disabled"
+                            class="px-6 py-3 rounded-full bg-blue-500 hover:bg-blue-600 text-white font-semibold transition"
+                        >
+                            Finish Quiz
+                        </button>
+                    </div>
+                </div>
+
+            @elseif($currentQuestion)
                 <!-- Progress -->
                 <div class="mb-6">
                     <p class="text-sm text-gray-600 font-semibold uppercase tracking-wide mb-2">
                         PROGRESS: Question {{ $questionNumber }} of {{ $totalQuestions }}
                     </p>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: {{ ($questionNumber / $totalQuestions) * 100 }}%"></div>
+                        <div class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                             style="width: {{ ($questionNumber / $totalQuestions) * 100 }}%">
+                        </div>
                     </div>
                 </div>
 
@@ -50,25 +86,28 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                         @foreach($options as $optionKey => $optionText)
                             @php
-                                // Display key: if option keys are numeric (0,1,14,...) show A,B,C... instead
+                                // Display key: numeric option keys -> A,B,C,...; string keys are used as-is
                                 $displayKey = is_numeric($optionKey) ? chr(65 + $loop->index) : (string) $optionKey;
 
                                 $isSelected = false;
                                 if ($currentQuestion->type === 'multiple_choice') {
-                                    $isSelected = is_array($currentAnswer) && in_array($displayKey, $currentAnswer);
+                                    $isSelected = is_array($currentAnswer) && in_array($displayKey, $currentAnswer, true);
                                 } else {
                                     $isSelected = $currentAnswer === $displayKey;
                                 }
                             @endphp
 
-                            <label wire:key="q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}" class="relative flex items-center p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 cursor-pointer transition group pl-6 {{ $isSelected ? 'border-blue-500 bg-blue-50' : '' }}">
+                            <label
+                                wire:key="q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}"
+                                class="relative flex items-center p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 cursor-pointer transition group pl-6 {{ $isSelected ? 'border-blue-500 bg-blue-50' : '' }}"
+                            >
                                 @if($currentQuestion->type === 'multiple_choice')
                                     <input
                                         wire:key="input-q-{{ $currentQuestion->id }}-opt-{{ $displayKey }}"
                                         type="checkbox"
                                         name="answer_{{ $currentQuestion->id }}[]"
                                         value="{{ $displayKey }}"
-                                        wire:model="selectedAnswers.{{ $currentQuestion->id }}"
+                                        wire:model="selectedAnswers.{{ $currentQuestion->id }}.{{ $displayKey }}"
                                         class="left-4 top-4 w-5 h-5"
                                         style="accent-color: #0ea5e9;"
                                     >
@@ -88,11 +127,15 @@
                                     <span class="block text-sm font-semibold text-gray-900 mb-1">{{ $displayKey }}</span>
                                     <span class="text-gray-700">{{ $optionText }}</span>
                                 </div>
-                                <span class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-blue-500 text-sm font-semibold text-gray-400 group-hover:text-blue-600 transition {{ $isSelected ? 'border-blue-500 text-blue-600 bg-blue-50' : '' }}">{{ $displayKey }}</span>
+
+                                <span
+                                    class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 group-hover:border-blue-500 text-sm font-semibold text-gray-400 group-hover:text-blue-600 transition {{ $isSelected ? 'border-blue-500 text-blue-600 bg-blue-50' : '' }}"
+                                >
+                                    {{ $displayKey }}
+                                </span>
                             </label>
                         @endforeach
                     </div>
-
                 @else
                     <p class="text-gray-500 text-center py-8">No options available for this question.</p>
                 @endif
@@ -118,30 +161,22 @@
                         @endif
                     </span>
 
-                    @if($questionNumber === $totalQuestions)
-                        <button
-                            wire:click="submit"
-                            wire:loading.attr="disabled"
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2"
-                        >
-                            Submit Quiz
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    @else
-                        <button
-                            wire:click="nextQuestion"
-                            wire:loading.attr="disabled"
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2"
-                        >
+                    <button
+                        wire:click="goNextOrReview"
+                        wire:loading.attr="disabled"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full transition flex items-center gap-2"
+                    >
+                        @if($questionNumber === $totalQuestions)
+                            Review &amp; Finish
+                        @else
                             Next Question
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    @endif
+                        @endif
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
+
             @else
                 <!-- No Questions -->
                 <div class="text-center py-12">
