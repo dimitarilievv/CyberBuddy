@@ -29,10 +29,24 @@ class ModuleController extends Controller
 
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $user   = auth()->user();
         $filter = $request->query('filter', 'all');
         $perPage = 9;
-        $dashboardData = $this->moduleService->getDashboardData($user, $filter, $perPage, $request->query());
+
+        $audience = null;
+        if ($user && $user->hasRole('parent')) {
+            $audience = 'parent';
+        } elseif ($user && $user->hasRole('child')) {
+            $audience = 'child';
+        }
+
+        $queryParams = $request->query();
+        if ($audience) {
+            $queryParams['audience'] = $audience;
+        }
+
+        $dashboardData = $this->moduleService->getDashboardData($user, $filter, $perPage, $queryParams);
+
         return view('modules.index', $dashboardData);
     }
 

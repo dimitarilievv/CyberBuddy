@@ -75,9 +75,15 @@ class ModuleService
     {
         return $this->moduleRepo->getPublishedPaginated($perPage);
     }
-    public function getTotalMissionCount(): int
+    public function getTotalMissionCount(?string $audience = null): int
     {
-        return $this->moduleRepo->getPublished()->count();
+        $query = $this->moduleRepo->getPublished();
+
+        if ($audience) {
+            $query = $query->where('audience', $audience);
+        }
+
+        return $query->count();
     }
 
     public function getUserMissionsCompletedCount(int $userId): int
@@ -118,9 +124,15 @@ class ModuleService
             'progress' => $progress,
         ];
     }
-    public function getUserCompletedModulesCount(int $userId): int
+    public function getUserCompletedModulesCount(int $userId, ?string $audience = null): int
     {
-        $modules = \App\Models\Module::where('is_published', true)->get();
+        $modulesQuery = \App\Models\Module::where('is_published', true);
+
+        if ($audience) {
+            $modulesQuery->where('audience', $audience);
+        }
+
+        $modules = $modulesQuery->get();
         $completedCount = 0;
         foreach ($modules as $module) {
             $lessonIds = $module->lessons()->pluck('id');
@@ -146,6 +158,12 @@ class ModuleService
             ->withCount('lessons')
             ->orderBy('sort_order');
 
+        $audience = $queryParams['audience'] ?? null;
+
+        if (!empty($audience)) {
+            $modulesQuery->where('audience', $queryParams['audience']);
+        }
+
         if ($user) {
             $userEnrollments = $this->enrollmentRepo->getUserEnrollments($user->id);
             $completedModuleIds = $userEnrollments->where('status', 'completed')->pluck('module_id');
@@ -167,10 +185,10 @@ class ModuleService
 
         $modules = $modulesQuery->paginate($perPage)->appends($queryParams);
         $missionsCompleted = 0;
-        $totalMissions = $this->getTotalMissionCount();
+        $totalMissions = $this->getTotalMissionCount($audience);
         if ($user) {
             $user->loadMissing('badges', 'leaderboard');
-            $missionsCompleted = $this->getUserCompletedModulesCount($user->id);
+            $missionsCompleted = $this->getUserCompletedModulesCount($user->id,$audience);
         }
 
         // Next badge milestone logic

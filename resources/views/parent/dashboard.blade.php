@@ -18,9 +18,9 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
                 <div class="bg-white rounded-2xl p-5 shadow flex flex-col items-center justify-center">
-                    <img src="{{ $parent->profile_photo_url ?? '/img/parent-avatar.svg' }}" class="w-14 h-14 rounded-full mb-2 border-2 border-blue-100 shadow" alt="Parent Avatar">
-                    <div class="font-semibold text-lg">{{ $parent->name }}</div>
-                    <div class="text-sm text-gray-400">{{ $children->pluck('profile.grade')->unique()->join(', ') }}</div>
+{{--                    <img src="{{ $parent->avatar ?? '/img/parent-avatar.svg' }}" class="w-14 h-14 rounded-full mb-2 border-2 border-blue-100 shadow" alt="Parent Avatar">--}}
+                    <div class="font-semibold text-lg">{{ $parent->name }}'s Family</div>
+{{--                    <div class="text-sm text-gray-400">{{ $children->pluck('profile.grade')->unique()->join(', ') }}</div>--}}
                     <div class="flex flex-wrap gap-2 mt-2">
                         @foreach($children as $child)
                             <span class="bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">{{ $child->name }}</span>
@@ -66,12 +66,12 @@
                             <button
                                 @click="tab = 'new'"
                                 class="flex-1 bg-blue-600 text-white font-semibold rounded-lg px-4 py-3 text-lg hover:bg-blue-700 transition">
-                                Create New Child
+                                Create New Child Profile
                             </button>
                             <button
                                 @click="tab = 'existing'"
                                 class="flex-1 bg-gray-100 text-gray-700 font-semibold rounded-lg px-4 py-3 text-lg hover:bg-blue-100 hover:text-blue-700 transition">
-                                Attach Existing
+                                Attach Existing Profile
                             </button>
                         </div>
                     </template>
