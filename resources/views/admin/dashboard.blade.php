@@ -62,19 +62,23 @@
 {{--        </div>--}}
 
         <!-- Tabbed Management Section -->
-        <div x-data="{tab: 'users'}" class="mt-10">
-            <div class="flex gap-8 border-b mb-6 text-lg">
-                <button x-on:click="tab = 'users'"      :class="tab==='users'?'border-b-2 border-blue-600 text-blue-700 font-bold':'text-gray-600'" class="px-1 pb-1">Users</button>
-                <button x-on:click="tab = 'modules'"    :class="tab==='modules'?'border-b-2 border-teal-600 text-teal-700 font-bold':'text-gray-600'" class="px-1 pb-1">Published Modules</button>
-                <button x-on:click="tab = 'reports'"    :class="tab==='reports'?'border-b-2 border-red-600 text-red-700 font-bold':'text-gray-600'" class="px-1 pb-1">Pending Reports</button>
-                <button x-on:click="tab = 'jobs'"       :class="tab==='jobs'?'border-b-2 border-yellow-600 text-yellow-700 font-bold':'text-gray-600'" class="px-1 pb-1">Completed Jobs</button>
-            </div>
-
             <div x-show="tab==='users'" class="bg-white rounded-xl shadow p-6">
                 <div class="mb-2 flex justify-between items-center">
                     <span class="font-bold text-xl">All Users</span>
                     <a href="{{ route('admin.users.export') }}" target="_blank" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-blue-700">Export CSV</a>
                 </div>
+
+                @if (session('status'))
+                    <div class="mb-3 text-green-600 text-sm">
+                        {{ session('status') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="mb-3 text-red-600 text-sm">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white rounded shadow divide-y divide-gray-100">
                         <thead>
@@ -83,18 +87,36 @@
                             <th class="py-2 px-4 text-left">Email</th>
                             <th class="py-2 px-4 text-left">Role</th>
                             <th class="py-2 px-4 text-left">Status</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach(\App\Models\User::orderBy('name')->take(30)->get() as $user)
+                            @php
+                                // If you're fully on Spatie, use roles; otherwise fall back to column
+                                $currentRole = method_exists($user, 'roles')
+                                    ? $user->roles->pluck('name')->implode(', ')
+                                    : ($user->role ?? '');
+                            @endphp
                             <tr class="hover:bg-gray-50">
                                 <td class="py-2 px-4">{{ $user->name }}</td>
                                 <td class="py-2 px-4">{{ $user->email }}</td>
-                                <td class="py-2 px-4 capitalize">{{ $user->role }}</td>
+                                <td class="py-2 px-4 capitalize">
+                                    {{ $currentRole ?: '— none —' }}
+                                </td>
                                 <td class="py-2 px-4">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $user->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
-                                    {{ $user->is_active ? 'Active' : 'Inactive' }}
-                                </span>
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $user->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">
+                            {{ $user->is_active ? 'Active' : 'Inactive' }}
+                        </span>
+                                </td>
+                                <td class="py-2 px-4">
+                                    <button
+                                        type="button"
+                                        class="text-xs px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
+                                        onclick="openRoleModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                    >
+                                        Assign role
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -487,6 +509,81 @@
             </tbody>
         </table>
     </div>
+    <!-- Assign Role Modal -->
+    <div
+        id="role-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40"
+    >
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 relative">
+            <button
+                type="button"
+                class="absolute top-2 right-2 text-slate-500 hover:text-slate-700"
+                onclick="closeRoleModal()"
+            >
+                ✕
+            </button>
 
+            <h2 class="text-lg font-semibold mb-4">
+                Assign role to <span id="role-modal-user-name" class="font-bold"></span>
+            </h2>
+
+            <form id="role-modal-form" method="POST">
+                @csrf
+
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Role
+                </label>
+                <select
+                    name="role"
+                    class="w-full border rounded px-2 py-1 text-sm mb-4"
+                    required
+                >
+                    <option value="">Select role</option>
+                    <option value="child">Child</option>
+                    <option value="parent">Parent</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <div class="flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="px-3 py-1 text-sm rounded border border-slate-300 text-slate-700"
+                        onclick="closeRoleModal()"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-3 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openRoleModal(userId, userName) {
+            const modal = document.getElementById('role-modal');
+            const form  = document.getElementById('role-modal-form');
+            const name  = document.getElementById('role-modal-user-name');
+
+            name.textContent = userName;
+
+            // /admin/users/{user}/role
+            form.action = "{{ url('admin/users') }}/" + userId + "/role";
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRoleModal() {
+            const modal = document.getElementById('role-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 
 @endsection
