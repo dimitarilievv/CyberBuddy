@@ -45,29 +45,30 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            Reading + Video
+                            Reading
                         </span>
                     </div>
 
                     <!-- Video Section -->
-                    <div class="relative w-full bg-gray-900 rounded-2xl overflow-hidden mb-12 aspect-video">
-                        @if($lesson->mediaFiles && $lesson->mediaFiles->where('type', 'video')->first())
+                    @php
+                        $video = $lesson->mediaFiles
+                            ? $lesson->mediaFiles->where('type', 'video')->first()
+                            : null;
+                    @endphp
+
+                    @if($video)
+                        <!-- Video Section -->
+                        <div class="relative w-full bg-gray-900 rounded-2xl overflow-hidden mb-12 aspect-video">
                             <iframe
                                 class="w-full h-full"
-                                src="{{ $lesson->mediaFiles->where('type', 'video')->first()->url }}"
+                                src="{{ $video->url }}"
                                 title="{{ $lesson->title }}"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
-                        @else
-                            <div class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                                <svg class="w-20 h-20 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                                </svg>
-                            </div>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
 
                     <!-- Content Tabs -->
                     <div class="mb-12">
@@ -82,7 +83,7 @@
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-6">{{ $lesson->title }}</h3>
                             <div class="prose prose-blue max-w-none mb-8 text-gray-700 leading-relaxed">
-                                {!! nl2br(e($lesson->content)) !!}
+                                {!! $lesson->content !!}
                             </div>
 
                             <!-- Do's and Don'ts -->
