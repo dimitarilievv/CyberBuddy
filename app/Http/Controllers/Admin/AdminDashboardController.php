@@ -69,6 +69,22 @@ class AdminDashboardController extends Controller
         return view('admin.users', compact('users'));
     }
 
+    public function updateUserRole(User $user)
+    {
+        $role = request('role');
+
+        if (! in_array($role, ['child', 'parent', 'teacher', 'admin'])) {
+            return back()->with('error', 'Invalid role selected.');
+        }
+
+        $user->role = $role;
+        $user->save();
+
+        $user->syncRoles([$role]);
+
+        return back()->with('status', "Role for {$user->name} updated to {$role}.");
+    }
+
     public function exportUsers()
     {
         $filename = 'users_export_' . now()->format('Ymd_His') . '.csv';

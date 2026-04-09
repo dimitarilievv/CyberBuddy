@@ -333,6 +333,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/users', [AdminDashboardController::class, 'users'])->name('admin.users');
         Route::get('/users/export', [AdminDashboardController::class, 'exportUsers'])->name('admin.users.export');
+        Route::post('/users/{user}/role', [AdminDashboardController::class, 'updateUserRole'])->name('admin.users.updateRole');
         Route::get('/modules', [AdminDashboardController::class, 'modules'])->name('admin.modules.index');
         Route::post('/modules', [AdminDashboardController::class, 'storeModule'])->name('admin.modules.store');
         Route::put('/modules/{module}', [AdminDashboardController::class, 'updateModule'])->name('admin.modules.update');
