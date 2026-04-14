@@ -6,20 +6,25 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\UserProgress;
 use App\Models\Enrollment;
+use App\Models\Notification;
 use App\Services\BadgeService;
 use App\Services\UserStatsService;
+use App\Services\CertificateService;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LessonController extends Controller
 {
     public function __construct(
         private BadgeService $badgeService,
-        private UserStatsService $userStatsService
+        private UserStatsService $userStatsService,
+        private CertificateService $certificateService,
+        private NotificationService $notificationService
     ) {}
 
     public function show(Module $module, Lesson $lesson)
     {
-        // Проверка дали лекцијата припаѓа на модулот
         if ($lesson->module_id !== $module->id) {
             abort(404);
         }
@@ -61,7 +66,6 @@ class LessonController extends Controller
 
     public function complete(Module $module, Lesson $lesson)
     {
-        // Проверка дали лекцијата припаѓа на модулот
         if ($lesson->module_id !== $module->id) {
             abort(404);
         }
@@ -92,17 +96,52 @@ class LessonController extends Controller
 
             $percentage = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
 
+            $wasCompleted = $enrollment->status === 'completed';
+
             $enrollment->update([
                 'progress_percentage' => $percentage,
                 'status' => $percentage >= 100 ? 'completed' : 'in_progress',
                 'completed_at' => $percentage >= 100 ? now() : null,
             ]);
 
-            // ✅ ADD USER STATS - Points and Streak
-            $this->userStatsService->addPoints($user, 10); // 10 points per lesson
+            // ✅ DETECT MODULE COMPLETION
+            $justCompleted = !$wasCompleted && $percentage >= 100;
+
+            Log::info('Module completion check', [
+                'user_id' => $user->id,
+                'module_id' => $module->id,
+                'percentage' => $percentage,
+                'wasCompleted' => $wasCompleted,
+                'justCompleted' => $justCompleted,
+            ]);
+
+            if ($justCompleted) {
+                try {
+                    $enrollment->refresh();
+
+                    Log::info('Generating certificate', [
+                        'user_id' => $user->id,
+                        'module_id' => $module->id,
+                    ]);
+
+                    $certificate = $this->certificateService->generate($enrollment);
+
+                    Log::info('Certificate generated successfully', [
+                        'certificate_id' => $certificate->id,
+                    ]);
+                } catch (\Throwable $e) {
+                    Log::error('Certificate generation failed', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
+            }
+
+            // Add points and streak
+            $this->userStatsService->addPoints($user, 10);
             $this->userStatsService->updateStreak($user);
 
-            // ✅ CHECK AND AWARD BADGES
+            // Check and award badges
             $newBadges = $this->badgeService->checkAndAward($user);
 
             if ($newBadges->isNotEmpty()) {
@@ -110,7 +149,6 @@ class LessonController extends Controller
             }
         }
 
-        // Find the next lesson
         $nextLesson = Lesson::where('module_id', $module->id)
             ->where('sort_order', '>', $lesson->sort_order)
             ->where('is_published', true)
@@ -122,7 +160,6 @@ class LessonController extends Controller
                 ->with('success', 'Lesson marked as completed! Moving to next lesson.');
         }
 
-        // If no next lesson, go to module overview or congrat message
         return redirect()->route('modules.index')
             ->with('success', 'Congratulations! You have completed this module.');
     }

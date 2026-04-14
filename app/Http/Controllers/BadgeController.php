@@ -39,7 +39,8 @@ class BadgeController extends Controller
         $nextBadge = $this->badgeService->getNextBadge($user);
 
         $streakDays = $leaderboardEntry ? $leaderboardEntry->current_streak : ($user->current_streak ?? 0);
-        $totalPoints = $user->total_points ?? 0;
+        // Prefer leaderboard total points when available so badges page matches leaderboard
+        $totalPoints = $leaderboardEntry ? $leaderboardEntry->total_points : ($user->total_points ?? 0);
         $aiInteractions = $user->ai_interactions ?? 0;
 
         return view('badges.index', compact(
