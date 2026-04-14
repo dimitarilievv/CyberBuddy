@@ -20,6 +20,10 @@ class User extends Authenticatable
         'parent_id',
         'is_active',
         'last_login_at',
+        'total_points',
+        'current_streak',
+        'ai_interactions',
+        'last_activity_at',
     ];
 
     protected $hidden = [
