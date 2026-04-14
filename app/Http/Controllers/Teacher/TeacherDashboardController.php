@@ -39,6 +39,26 @@ class TeacherDashboardController extends Controller
         return back()->with('success', 'Scenario approved!');
     }
 
+    public function rejectLesson(Lesson $lesson)
+    {
+        // authorize optionally
+        // $this->authorize('delete', $lesson);
+        $lesson->delete();
+        return back()->with('success', 'Lesson suggestion declined and removed.');
+    }
+
+    public function rejectQuiz(Quiz $quiz)
+    {
+        $quiz->delete();
+        return back()->with('success', 'Quiz suggestion declined and removed.');
+    }
+
+    public function rejectScenario(Scenario $scenario)
+    {
+        $scenario->delete();
+        return back()->with('success', 'Scenario suggestion declined and removed.');
+    }
+
     public function index(Request $request)
     {
         $teacher = $request->user();

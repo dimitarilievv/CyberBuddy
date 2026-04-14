@@ -291,12 +291,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // For Lessons
     Route::post('/teacher/lessons/{lesson}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveLesson'])->name('teacher.lessons.approve');
+    Route::delete('/teacher/lessons/{lesson}', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'rejectLesson'])->name('teacher.lessons.reject');
 
 // For Quizzes
     Route::post('/teacher/quizzes/{quiz}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveQuiz'])->name('teacher.quizzes.approve');
+    Route::delete('/teacher/quizzes/{quiz}', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'rejectQuiz'])->name('teacher.quizzes.reject');
 
 // For Scenarios
     Route::post('/teacher/scenarios/{scenario}/approve', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'approveScenario'])->name('teacher.scenarios.approve');
+    Route::delete('/teacher/scenarios/{scenario}', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'rejectScenario'])->name('teacher.scenarios.reject');
     Route::prefix('teacher/ai')->middleware(['auth','role:teacher'])->group(function () {
         // Forms
         Route::get('/lesson',   [\App\Http\Controllers\Teacher\TeacherAIContentController::class, 'showLessonForm'])->name('teacher.ai.lesson.form');
