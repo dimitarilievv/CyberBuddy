@@ -6,9 +6,17 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\UserProgress;
 use App\Models\Enrollment;
+use App\Services\BadgeService;
+use App\Services\UserStatsService;
+use Illuminate\Support\Facades\Auth;
 
 class LessonController extends Controller
 {
+    public function __construct(
+        private BadgeService $badgeService,
+        private UserStatsService $userStatsService
+    ) {}
+
     public function show(Module $module, Lesson $lesson)
     {
         // Проверка дали лекцијата припаѓа на модулот
@@ -62,13 +70,14 @@ class LessonController extends Controller
             abort(401);
         }
 
-        $enrollment = Enrollment::where('user_id', auth()->id())
+        $user = Auth::user();
+        $enrollment = Enrollment::where('user_id', $user->id)
             ->where('module_id', $module->id)
             ->first();
 
         if ($enrollment) {
             UserProgress::updateOrCreate(
-                ['user_id' => auth()->id(), 'lesson_id' => $lesson->id],
+                ['user_id' => $user->id, 'lesson_id' => $lesson->id],
                 [
                     'enrollment_id' => $enrollment->id,
                     'status' => 'completed',
@@ -88,10 +97,21 @@ class LessonController extends Controller
                 'status' => $percentage >= 100 ? 'completed' : 'in_progress',
                 'completed_at' => $percentage >= 100 ? now() : null,
             ]);
+
+            // ✅ ADD USER STATS - Points and Streak
+            $this->userStatsService->addPoints($user, 10); // 10 points per lesson
+            $this->userStatsService->updateStreak($user);
+
+            // ✅ CHECK AND AWARD BADGES
+            $newBadges = $this->badgeService->checkAndAward($user);
+
+            if ($newBadges->isNotEmpty()) {
+                session()->flash('awarded', $newBadges);
+            }
         }
 
         // Find the next lesson
-        $nextLesson = \App\Models\Lesson::where('module_id', $module->id)
+        $nextLesson = Lesson::where('module_id', $module->id)
             ->where('sort_order', '>', $lesson->sort_order)
             ->where('is_published', true)
             ->orderBy('sort_order')
@@ -102,7 +122,7 @@ class LessonController extends Controller
                 ->with('success', 'Lesson marked as completed! Moving to next lesson.');
         }
 
-// If no next lesson, go to module overview or congrat message
+        // If no next lesson, go to module overview or congrat message
         return redirect()->route('modules.index')
             ->with('success', 'Congratulations! You have completed this module.');
     }

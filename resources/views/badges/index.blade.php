@@ -22,14 +22,14 @@
 
             {{-- ── PHP vars ── --}}
             @php
-                $earnedCount = $badges->count();
-                $allBadges   = app(\App\Services\BadgeService::class)->getActiveBadges();
-                $totalCount  = $allBadges->count();
+                $earnedCount = $userBadgeSlugs ? count($userBadgeSlugs) : 0;
+                $totalCount  = $badges->count();
                 $progressPct = $totalCount > 0 ? round(($earnedCount / $totalCount) * 100) : 0;
-                $earnedSlugs = $badges->pluck('slug')->toArray();
-                $nextBadge   = $allBadges->first(fn($b) => !in_array($b->slug, $earnedSlugs));
-                $streakDays  = auth()->user()->current_streak ?? 0;
-                $totalPoints = auth()->user()->total_points ?? 0;
+                $earnedSlugs = $userBadgeSlugs ?? [];
+                $nextBadge   = $nextBadge ?? null;
+                // $streakDays comes from the controller (prefers leaderboard current_streak)
+                // Use leaderboardPoints (controller-provided) if available, otherwise fallback to user total_points
+                $totalPoints = isset($leaderboardPoints) ? $leaderboardPoints : (auth()->user()->total_points ?? 0);
             @endphp
 
             {{-- ── Top row ── --}}
@@ -99,13 +99,9 @@
 
             {{-- ── Badge Grid ── --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8" id="badgeGrid">
-                @foreach($allBadges as $badge)
+                @foreach($badges as $badge)
                     @php
                         $earned      = in_array($badge->slug, $earnedSlugs);
-                        $earnedPivot = $earned ? $badges->firstWhere('slug', $badge->slug) : null;
-                        $earnedDate  = $earnedPivot?->pivot?->earned_at
-                                        ? \Carbon\Carbon::parse($earnedPivot->pivot->earned_at)->format('M d, Y')
-                                        : null;
                         $color = $badge->color ?? '#6B7280';
 
                         $hint = null;
@@ -150,12 +146,7 @@
 
                         {{-- Footer --}}
                         <div class="mt-3 pt-3 border-t border-gray-100">
-                            @if($earned && $earnedDate)
-                                <div class="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                    Unlocked on {{ $earnedDate }}
-                                </div>
-                            @elseif($earned)
+                            @if($earned)
                                 <div class="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     Unlocked

@@ -49,7 +49,7 @@
                     <div class="text-gray-500 text-xs">Streak</div>
                 </div>
                 <div>
-                    <div class="text-2xl font-bold text-cyan-600">{{ $leaderboardStats['badges'] ?? 0 }}</div>
+                    <div class="text-2xl font-bold text-cyan-600">{{ $user ? $user->badges()->count() : 0 }}</div>
                     <div class="text-gray-500 text-xs">Badges</div>
                 </div>
             </div>
