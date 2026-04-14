@@ -95,14 +95,22 @@ class QuizAttemptService
         $passed = $score >= $quiz->passing_score;
         $timeSpent = now()->diffInSeconds($attempt->started_at);
 
+        $this->storeAnswers($attemptId, $answers);
+
+        $totalPoints = QuestionAnswer::where('quiz_attempt_id', $attemptId)->sum('points_earned');
+        $percentage = $score;
+
         $updated = $this->attemptRepository->submitAttempt($attemptId, [
             'score' => $score,
+            'total_points' => $totalPoints,
+            'percentage' => $percentage,
+            'passed' => $passed,
             'time_spent_seconds' => $timeSpent,
             'status' => $passed ? 'passed' : 'failed',
             'completed_at' => now(),
         ]);
 
-        $this->storeAnswers($attemptId, $answers);
+
 
         $this->generateAndSaveAiFeedback($updated);
 
@@ -112,7 +120,7 @@ class QuizAttemptService
     private function calculateScore(int $quizId, array $answers): float
     {
         $quiz = $this->quizRepository->findOrFail($quizId);
-        $questions = $quiz->questions()->with('answers')->get();
+        $questions = $quiz->questions()->get();
 
         if ($questions->isEmpty()) {
             return 0.0;
@@ -122,7 +130,18 @@ class QuizAttemptService
 
         foreach ($questions as $question) {
             $givenAnswer = $answers[$question->id] ?? null;
-            if ($givenAnswer && $question->correct_answer == $givenAnswer) {
+            if ($givenAnswer === null || $givenAnswer === '') {
+                continue;
+            }
+
+            $correctLetters = json_decode($question->correct_answer, true) ?? [];
+            $givenLetters = is_array($givenAnswer) ? $givenAnswer : [$givenAnswer];
+
+            $isCorrect = !empty($givenLetters)
+                && !array_diff($givenLetters, $correctLetters)
+                && !array_diff($correctLetters, $givenLetters);
+
+            if ($isCorrect) {
                 $correct++;
             }
         }
@@ -138,8 +157,8 @@ class QuizAttemptService
                 'quiz_attempt_id' => $attemptId,
                 'question_id' => $questionId,
                 'given_answer' => $givenAnswer,
-                'is_correct' => false, // we calculate later or at store
-                'points_earned' => 0,  // optional, can calculate here if needed
+                'is_correct' => false,
+                'points_earned' => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -150,11 +169,27 @@ class QuizAttemptService
         // update correctness and points
         foreach ($answers as $questionId => $givenAnswer) {
             $question = $this->quizRepository->findQuestionById($questionId);
+
+            $correctLetters = [];
+            if ($question && $question->correct_answer) {
+                // correct_answer is JSON, e.g. '["B"]'
+                $correctLetters = json_decode($question->correct_answer, true) ?? [];
+            }
+
+            // If in the future you allow multiple answers, $givenAnswer may be array
+            $givenLetters = is_array($givenAnswer) ? $givenAnswer : [$givenAnswer];
+
+            // fully correct if chosen letters == correctLetters set
+            $isCorrect = $question
+                && !empty($givenLetters)
+                && !array_diff($givenLetters, $correctLetters)
+                && !array_diff($correctLetters, $givenLetters);
+
             QuestionAnswer::where('quiz_attempt_id', $attemptId)
                 ->where('question_id', $questionId)
                 ->update([
-                    'is_correct' => $question && $question->correct_answer == $givenAnswer,
-                    'points_earned' => $question ? ($question->points ?? 0) : 0,
+                    'is_correct' => $isCorrect,
+                    'points_earned' => $isCorrect ? ($question->points ?? 0) : 0,
                 ]);
         }
     }

@@ -15,7 +15,7 @@
                     <th class="p-3 text-left">Quiz</th>
                     <th class="p-3 text-left">Score</th>
                     <th class="p-3 text-left">Status</th>
-                    <th class="p-3 text-left">Time Spent</th>
+{{--                    <th class="p-3 text-left">Time Spent</th>--}}
                     <th class="p-3 text-left">Started At</th>
                     <th class="p-3 text-left">Actions</th>
                 </tr>
@@ -23,19 +23,27 @@
                 <tbody>
                 @foreach($attempts as $attempt)
                     @php
-                        $timeSpent = isset($attempt->time_spent_seconds) && $attempt->time_spent_seconds !== null
-                            ? gmdate('H:i:s', (int) $attempt->time_spent_seconds)
-                            : '-';
                         $startedAt = $attempt->started_at ? $attempt->started_at->format('Y-m-d H:i') : '-';
+                        $lesson   = $attempt->quiz->lesson ?? null;
+                        $module   = $lesson?->module ?? null;
                     @endphp
                     <tr class="border-t">
                         <td class="p-3">{{ $attempt->quiz->title }}</td>
                         <td class="p-3">{{ $attempt->score }}%</td>
                         <td class="p-3 capitalize">{{ $attempt->status }}</td>
-                        <td class="p-3">{{ $timeSpent }}</td>
+{{--                        <td class="p-3">{{ $attempt->time_spent_formatted }}</td>--}}
                         <td class="p-3">{{ $startedAt }}</td>
-                        <td class="p-3">
+                        <td class="p-3 space-x-3">
                             <a href="{{ route('quiz_attempts.show', $attempt->id) }}" class="text-blue-500 hover:underline">View</a>
+
+                            @if($lesson && $module)
+                                <a
+                                    href="{{ route('lessons.show', [$module, $lesson]) }}"
+                                    class="text-sm text-gray-700 hover:text-gray-900 inline-flex items-center px-3 py-1 border border-gray-300 rounded-full transition"
+                                >
+                                    Back to Lesson
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

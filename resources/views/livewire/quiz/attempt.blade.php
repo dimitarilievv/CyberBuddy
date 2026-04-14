@@ -14,12 +14,6 @@
 
         <!-- Question / Review Area -->
         <div class="p-8">
-
-            {{-- DEBUG: remove later --}}
-{{--            <pre class="text-xs bg-gray-100 p-2 mb-4">--}}
-{{--selectedAnswers: @json($selectedAnswers ?? [])--}}
-{{--            </pre>--}}
-
             @if($showReview)
                 {{-- REVIEW SCREEN --}}
                 <div class="text-center py-12">
@@ -86,7 +80,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                         @foreach($options as $optionKey => $optionText)
                             @php
-                                // Display key: numeric option keys -> A,B,C,...; string keys are used as-is
+                                // numeric -> A,B,C,... ; string keys stay as-is
                                 $displayKey = is_numeric($optionKey) ? chr(65 + $loop->index) : (string) $optionKey;
 
                                 $isSelected = false;

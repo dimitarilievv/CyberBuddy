@@ -5,9 +5,16 @@
 @section('content')
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">{{ $passed ? '🎉 You Passed!' : 'Quiz Completed' }}</h1>
-        <p class="mb-2">Score: <strong>{{ $attempt->score }}%</strong></p>
-        <p class="mb-2">Status: <strong class="{{ $passed ? 'text-green-600' : 'text-red-600' }}">{{ ucfirst($attempt->status) }}</strong></p>
-        <p class="mb-2">Time Spent: <strong>{{ gmdate('H:i:s', $attempt->time_spent_seconds) }}</strong></p>
+        <p class="mb-2">
+            Score:
+            <strong>{{ $attempt->score }} / 100 ({{ $attempt->percentage }}%)</strong>
+            Raw Points: <strong>{{ $rawScore }} / {{ $rawMax }}</strong>
+        </p>
+        <p class="mb-2">
+            Status:
+            <strong class="{{ $passed ? 'text-green-600' : 'text-red-600' }}">{{ ucfirst($attempt->status) }}</strong>
+        </p>
+{{--        <p class="mb-2">Time Spent: <strong>{{ $attempt->time_spent_formatted }}</strong></p>--}}
 
         <h2 class="text-xl font-semibold mt-6 mb-2">Your Answers</h2>
         <div class="space-y-4">
@@ -27,7 +34,7 @@
                         return (string) $val;
                     };
 
-                    $givenDisplay = $formatValue($answer->given_answer ?? '');
+                    $givenDisplay   = $formatValue($answer->given_answer ?? '');
                     $correctDisplay = $formatValue($answer->question->correct_answer ?? '');
                 @endphp
 
@@ -35,7 +42,12 @@
                     <p class="font-semibold">Q{{ $loop->iteration }}: {{ $answer->question->question_text }}</p>
                     <p>Given Answer: <strong>{{ $givenDisplay }}</strong></p>
                     <p>Correct Answer: <strong>{{ $correctDisplay }}</strong></p>
-                    <p>Status: <span class="{{ $answer->is_correct ? 'text-green-600' : 'text-red-600' }}">{{ $answer->is_correct ? 'Correct' : 'Incorrect' }}</span></p>
+                    <p>
+                        Status:
+                        <span class="{{ $answer->is_correct ? 'text-green-600' : 'text-red-600' }}">
+                            {{ $answer->is_correct ? 'Correct' : 'Incorrect' }}
+                        </span>
+                    </p>
                     <p>Points Earned: <strong>{{ $answer->points_earned }}</strong></p>
                 </div>
             @endforeach

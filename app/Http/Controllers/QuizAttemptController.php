@@ -48,7 +48,7 @@ class QuizAttemptController extends Controller
         ]);
 
         $attempt = $this->attemptService->submitAttempt($id, $request->answers);
-        $passed = $attempt->status === 'passed';
+        $passed = $attempt->status === 'completed';
 
         return view('quiz_attempts.result', compact('attempt', 'passed'));
     }

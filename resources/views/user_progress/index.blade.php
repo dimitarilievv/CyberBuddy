@@ -9,7 +9,7 @@
             @forelse($progress->where('lesson_id', $lesson->id) as $item)
                 <li>
                     Status: <strong>{{ ucfirst($item->status) }}</strong>
-                    | Time spent: {{ $item->time_spent_seconds }} seconds
+{{--                    | Time spent: {{ $item->time_spent_seconds }} seconds--}}
                     | Started: {{ $item->started_at?->format('Y-m-d H:i') ?? 'N/A' }}
                     | Completed: {{ $item->completed_at?->format('Y-m-d H:i') ?? 'N/A' }}
                 </li>

@@ -38,7 +38,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['C'],
                     'explanation' => 'Password C is strongest because it has upper/lowercase letters, numbers, special symbols, and length.',
-                    'points' => 2,
+                    'points' => 25,
                     'sort_order' => 1,
                 ],
                 [
@@ -50,7 +50,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'It is not safe to use the same password everywhere. If one account gets hacked, all your accounts are at risk.',
-                    'points' => 2,
+                    'points' => 25,
                     'sort_order' => 2,
                 ],
                 [
@@ -64,7 +64,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['C'],
                     'explanation' => 'Strong passwords should be at least 12 characters long. The longer, the harder it is to guess.',
-                    'points' => 2,
+                    'points' => 25,
                     'sort_order' => 3,
                 ],
                 [
@@ -78,7 +78,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['C'],
                     'explanation' => 'Changing passwords regularly helps keep your accounts secure. Always create a new, strong password.',
-                    'points' => 2,
+                    'points' => 25,
                     'sort_order' => 4,
                 ],
             ];
@@ -117,7 +117,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Updates fix security vulnerabilities that hackers could use to access your device.',
-                    'points' => 2,
+                    'points' => 30,
                     'sort_order' => 1,
                 ],
                 [
@@ -129,7 +129,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Apps from outside official stores may contain malware or viruses.',
-                    'points' => 2,
+                    'points' => 30,
                     'sort_order' => 2,
                 ],
                 [
@@ -143,7 +143,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Public Wi-Fi can be risky. Using a VPN helps protect your data.',
-                    'points' => 2,
+                    'points' => 40,
                     'sort_order' => 3,
                 ],
             ];
@@ -182,7 +182,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Sharing hobbies is generally safe. Personal contact info and location details should stay private.',
-                    'points' => 2,
+                    'points' => 20,
                     'sort_order' => 1,
                 ],
                 [
@@ -194,7 +194,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Only accept friend requests from people you know in real life to protect your privacy.',
-                    'points' => 2,
+                    'points' => 35,
                     'sort_order' => 2,
                 ],
                 [
@@ -208,7 +208,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['D'],
                     'explanation' => 'Apps need permissions for features, but some collect data for advertising. Only grant necessary permissions.',
-                    'points' => 2,
+                    'points' => 45,
                     'sort_order' => 3,
                 ],
             ];
@@ -247,7 +247,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Your digital footprint is all the information about you that exists online.',
-                    'points' => 2,
+                    'points' => 35,
                     'sort_order' => 1,
                 ],
                 [
@@ -259,7 +259,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['A'],
                     'explanation' => 'Even if you delete a post, someone might have taken a screenshot or saved it.',
-                    'points' => 2,
+                    'points' => 30,
                     'sort_order' => 2,
                 ],
                 [
@@ -273,7 +273,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['D'],
                     'explanation' => 'Searching your name, checking settings, and reviewing posts helps you understand your footprint.',
-                    'points' => 2,
+                    'points' => 35,
                     'sort_order' => 3,
                 ],
             ];
@@ -312,7 +312,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Always check the source and verify information before sharing.',
-                    'points' => 2,
+                    'points' => 30,
                     'sort_order' => 1,
                 ],
                 [
@@ -324,7 +324,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['B'],
                     'explanation' => 'Not everything on social media is true. Always fact-check before believing or sharing.',
-                    'points' => 2,
+                    'points' => 30,
                     'sort_order' => 2,
                 ],
                 [
@@ -338,7 +338,7 @@ class QuizSeeder extends Seeder
                     ],
                     'correct_answer' => ['D'],
                     'explanation' => 'Fake news often has strange URLs, mistakes, and tries to make you emotional.',
-                    'points' => 2,
+                    'points' => 40,
                     'sort_order' => 3,
                 ],
             ];
