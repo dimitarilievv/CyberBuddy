@@ -89,7 +89,8 @@ class LessonController extends Controller
                 ]
             );
 
-            $totalLessons = $module->lessons()->where('is_published', true)->count();
+            // Count all lessons in the module (not limited to published only) so progress reflects the actual lesson set
+            $totalLessons = $module->lessons()->count();
             $completedLessons = UserProgress::where('enrollment_id', $enrollment->id)
                 ->where('status', 'completed')
                 ->count();

@@ -127,7 +127,8 @@ class Attempt extends Component
             );
 
             // Recalculate module progress percentage and update enrollment
-            $totalLessons = $module->lessons()->where('is_published', true)->count();
+            // Count all lessons in the module so progress matches the module's true size
+            $totalLessons = $module->lessons()->count();
             $completedLessons = UserProgress::where('enrollment_id', $enrollment->id)
                 ->where('status', 'completed')
                 ->count();

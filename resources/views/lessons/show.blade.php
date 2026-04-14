@@ -217,7 +217,8 @@
                             @php
                                 // Compute totals only when module is available to avoid calling methods on null
                                 if ($module) {
-                                    $totalLessons = $module->lessons()->where('is_published', true)->count();
+                                    // Count all lessons for the module so the UI reflects the real lesson total.
+                                    $totalLessons = $module->lessons()->count();
                                     $completedLessons = 0;
                                     if (auth()->check()) {
                                         $completedLessons = UserProgress::whereHas('enrollment', function($q) use ($module) {
