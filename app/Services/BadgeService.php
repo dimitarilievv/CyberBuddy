@@ -8,6 +8,7 @@ use App\Models\QuizAttempt;
 use App\Models\ScenarioAttempt;
 use App\Models\Enrollment;
 use App\Models\Lesson;
+use App\Models\UserProgress; // ✅ add this import
 use Illuminate\Support\Collection;
 
 class BadgeService
@@ -17,9 +18,9 @@ class BadgeService
     /**
      * Check and award badges to user based on criteria
      */
-    public function checkAndAward(User $user): Collection  // ✅ Changed return type
+    public function checkAndAward(User $user): Collection
     {
-        $awardedBadges = collect();  // This returns Illuminate\Support\Collection
+        $awardedBadges = collect();
         $allBadges = Badge::where('is_active', true)->get();
 
         foreach ($allBadges as $badge) {
@@ -90,9 +91,11 @@ class BadgeService
         // Check lessons_completed
         if (isset($criteria['lessons_completed'])) {
             $required = $criteria['lessons_completed'];
-            $completed = Lesson::whereHas('completions', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->count();
+
+            // ✅ Use UserProgress instead of Lesson::completions()
+            $completed = UserProgress::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->count();
 
             return max(0, $required - $completed);
         }
@@ -136,21 +139,22 @@ class BadgeService
         return match ($key) {
             'lessons_completed' => $this->checkLessonsCompleted($user, $value),
             'modules_completed' => $this->checkModulesCompleted($user, $value),
-            'quiz_score' => $this->checkQuizScore($user, $value),
-            'quizzes_passed' => $this->checkQuizzesPassed($user, $value),
-            'streak_days' => $this->checkStreakDays($user, $value),
+            'quiz_score'        => $this->checkQuizScore($user, $value),
+            'quizzes_passed'    => $this->checkQuizzesPassed($user, $value),
+            'streak_days'       => $this->checkStreakDays($user, $value),
             'perfect_scenarios' => $this->checkPerfectScenarios($user, $value),
-            'ai_interactions' => $this->checkAiInteractions($user, $value),
-            'reports_made' => $this->checkReportsMade($user, $value),
-            default => false,
+            'ai_interactions'   => $this->checkAiInteractions($user, $value),
+            'reports_made'      => $this->checkReportsMade($user, $value),
+            default             => false,
         };
     }
 
     private function checkLessonsCompleted(User $user, int $required): bool
     {
-        $completed = Lesson::whereHas('completions', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->count();
+        // ✅ Use UserProgress instead of Lesson::completions()
+        $completed = UserProgress::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->count();
 
         return $completed >= $required;
     }

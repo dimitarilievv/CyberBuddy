@@ -11,6 +11,7 @@ use App\Services\BadgeService;
 use App\Services\UserStatsService;
 use App\Services\CertificateService;
 use App\Services\NotificationService;
+use App\Services\LessonService; // ✅ add this
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +21,8 @@ class LessonController extends Controller
         private BadgeService $badgeService,
         private UserStatsService $userStatsService,
         private CertificateService $certificateService,
-        private NotificationService $notificationService
+        private NotificationService $notificationService,
+        private LessonService $lessonService, // ✅ inject LessonService
     ) {}
 
     public function show(Module $module, Lesson $lesson)
@@ -89,7 +91,7 @@ class LessonController extends Controller
                 ]
             );
 
-            // Count all lessons in the module (not limited to published only) so progress reflects the actual lesson set
+            // Count all lessons in the module (not limited to published only)
             $totalLessons = $module->lessons()->count();
             $completedLessons = UserProgress::where('enrollment_id', $enrollment->id)
                 ->where('status', 'completed')
@@ -105,7 +107,11 @@ class LessonController extends Controller
                 'completed_at' => $percentage >= 100 ? now() : null,
             ]);
 
-            // ✅ DETECT MODULE COMPLETION
+            // ✅ UPDATE LEADERBOARD POINTS BASED ON ALL COMPLETED LESSONS
+            // This will recalculate points from UserProgress and store them in Leaderboard.total_points
+            $this->lessonService->updateLessonLeaderboard($user->id);
+
+            // ✅ DETECT MODULE COMPLETION (for certificate etc.)
             $justCompleted = !$wasCompleted && $percentage >= 100;
 
             Log::info('Module completion check', [
@@ -138,11 +144,10 @@ class LessonController extends Controller
                 }
             }
 
-            // Add points and streak
+            // Existing per‑lesson points/streak & badges (if you want to keep this)
             $this->userStatsService->addPoints($user, 10);
             $this->userStatsService->updateStreak($user);
 
-            // Check and award badges
             $newBadges = $this->badgeService->checkAndAward($user);
 
             if ($newBadges->isNotEmpty()) {
@@ -164,4 +169,6 @@ class LessonController extends Controller
         return redirect()->route('modules.index')
             ->with('success', 'Congratulations! You have completed this module.');
     }
+
+
 }

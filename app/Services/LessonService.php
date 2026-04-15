@@ -4,19 +4,21 @@ namespace App\Services;
 
 use App\Models\UserProgress;
 use App\Models\Leaderboard;
-use App\Repositories\Interfaces\LessonRepositoryInterface;
 
 class LessonService
 {
-    public function __construct(
-        private LessonRepositoryInterface $lessonRepo,
-    ) {}
-
+    public function __construct()
+    {
+        // No dependencies needed right now
+    }
 
     public function getUserLessonStats(int $userId): array
     {
         // All lessons where the user has any progress
-        $lessonsWithProgress = $this->lessonRepo->getLessonsWithUserProgress($userId);
+        // (if you really need "lessonsWithProgress", you can fetch Lesson via relation)
+        $lessonsWithProgress = UserProgress::where('user_id', $userId)
+            ->pluck('lesson_id')
+            ->unique();
 
         $completedLessonsCount = UserProgress::where('user_id', $userId)
             ->where('status', 'completed')
@@ -37,7 +39,6 @@ class LessonService
         ];
     }
 
-
     public function updateLessonLeaderboard(int $userId): void
     {
         $completedLessonsCount = UserProgress::where('user_id', $userId)
@@ -49,16 +50,16 @@ class LessonService
         Leaderboard::updateOrCreate(
             ['user_id' => $userId, 'period' => 'all_time'],
             [
-                // You may want to add / rename columns according to your schema:
-                'modules_completed' => $completedLessonsCount, // or a dedicated lessons_completed column
-                'total_points' => $totalPoints,
+                // rename if your column is different
+                'modules_completed' => $completedLessonsCount, // or lessons_completed
+                'total_points'      => $totalPoints,
             ]
         );
     }
 
-
     private function calculateLessonPoints(int $userId): int
     {
+        // 10 points per completed lesson
         $completedLessons = UserProgress::where('user_id', $userId)
             ->where('status', 'completed')
             ->count();
@@ -70,7 +71,6 @@ class LessonService
         $scenarioPoints = \App\Models\ScenarioAttempt::where('user_id', $userId)
             ->sum('safety_score');
 
-        // Same scoring logic as ProgressService, but conceptually “lesson-focused”
         return ($completedLessons * 10) + $quizPoints + $scenarioPoints;
     }
 }

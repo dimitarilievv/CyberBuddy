@@ -80,4 +80,12 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
             }])
             ->get();
     }
+    public function register()
+    {
+        $this->app->bind(
+            \App\Repositories\Interfaces\LessonRepositoryInterface::class,
+            \App\Repositories\LessonRepository::class
+        );
+    }
+
 }
