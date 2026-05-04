@@ -46,4 +46,4 @@ RUN mkdir -p storage bootstrap/cache \
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan optimize:clear || true; php artisan migrate --force -v || true; php artisan db:seed --force -v || true; php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "php artisan optimize:clear || true; php artisan migrate --force -v || true; php-fpm -D && nginx -g 'daemon off;'"]
