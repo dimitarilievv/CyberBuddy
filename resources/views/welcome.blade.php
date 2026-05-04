@@ -21,10 +21,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 12c0 3.491 1.497 6.63 3.876 8.797A11.955 11.955 0 0012 21a11.955 11.955 0 005.124-1.203A11.955 11.955 0 0021 12c0-2.168-.575-4.2-1.578-5.953A11.955 11.955 0 0012 2.964z" />
-                        </svg>
+                    <div class="w-24 h-10 rounded-lg  flex items-center justify-center flex-shrink-0">
+                        <img
+                            src="{{ asset('img/MKSN.png') }}"
+                            alt="CyberBuddy logo"
+                            class="w-full h-full object-cover"
+                        />
                     </div>
                     <span class="text-blue-500 font-bold text-base">CyberBuddy</span>
                 </div>
