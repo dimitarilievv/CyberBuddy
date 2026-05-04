@@ -8,15 +8,16 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# ---------- 2) Install PHP dependencies (with required PHP extensions) ----------
+# ---------- 2) Install PHP dependencies (needs artisan for package:discover) ----------
 FROM php:8.2-cli-alpine AS vendor
+
 RUN apk add --no-cache git icu-dev libzip-dev oniguruma-dev postgresql-dev \
  && docker-php-ext-install pdo pdo_pgsql intl zip mbstring exif
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-COPY composer.json composer.lock* ./
+COPY . .
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
 # ---------- 3) Runtime: PHP-FPM + Nginx ----------
@@ -44,4 +45,5 @@ RUN mkdir -p storage bootstrap/cache \
  && chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 80
+
 CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
