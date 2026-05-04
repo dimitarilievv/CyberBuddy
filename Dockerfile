@@ -8,10 +8,14 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# ---------- 2) Install PHP dependencies ----------
-FROM composer:2 AS vendor
-WORKDIR /app
+# ---------- 2) Install PHP dependencies (with required PHP extensions) ----------
+FROM php:8.2-cli-alpine AS vendor
+RUN apk add --no-cache git icu-dev libzip-dev oniguruma-dev postgresql-dev \
+ && docker-php-ext-install pdo pdo_pgsql intl zip mbstring exif
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
 COPY composer.json composer.lock* ./
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
@@ -19,7 +23,7 @@ RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoload
 FROM php:8.2-fpm-alpine
 
 RUN apk add --no-cache nginx bash icu-dev libzip-dev oniguruma-dev postgresql-dev \
- && docker-php-ext-install pdo pdo_pgsql intl zip mbstring opcache
+ && docker-php-ext-install pdo pdo_pgsql intl zip mbstring opcache exif
 
 WORKDIR /var/www/html
 
