@@ -7,6 +7,18 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 class Kernel extends HttpKernel
 {
     /**
+     * The application's global HTTP middleware stack.
+     *
+     * @var array<int, class-string|string>
+     */
+    protected $middleware = [
+        // Trust Render/edge proxy headers (X-Forwarded-Proto, etc.) so Request::isSecure() works.
+        \App\Http\Middleware\TrustProxies::class,
+
+        // ...existing code...
+    ];
+
+    /**
      * The application's route middleware groups.
      *
      * @var array<string, array<int, class-string|string>>
@@ -38,4 +50,3 @@ class Kernel extends HttpKernel
         // ...existing code...
     ];
 }
-
